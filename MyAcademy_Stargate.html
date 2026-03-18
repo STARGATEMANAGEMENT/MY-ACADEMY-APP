@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY ACADEMY — STARGATE Football Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #FF6D00;
+    --green-dim: #e55f00;
+    --green-glow: rgba(255,109,0,0.15);
+    --bg: #0e0b09;
+    --bg2: #161210;
+    --bg3: #1e1712;
+    --card: #1a1410;
+    --border: #2a1f15;
+    --border2: #352518;
+    --text: #f2ece8;
+    --muted: #78655a;
+    --accent: #FF6D00;
+    --red: #FF4444;
+    --yellow: #FFD600;
+    --blue: #29B6F6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a0f08 0%, #0e0b09 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; position: sticky; top:0; z-index:100;
+  }
+  .logo { display:flex; align-items:center; gap:.75rem; }
+  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+  .logo-text { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; color:var(--text); }
+  .logo-sub { font-size:.7rem; color:var(--muted); letter-spacing:3px; text-transform:uppercase; line-height:1; }
+  .header-stats { display:flex; gap:2rem; }
+  .hstat { text-align:center; }
+  .hstat-n { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; color:var(--green); line-height:1; }
+  .hstat-l { font-size:.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  .stargate-brand { font-size:.62rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; opacity:.6; }
+  .stargate-brand span { color:var(--accent); opacity:.9; }
+  .activation-overlay { position:fixed; inset:0; background:rgba(0,0,0,.97); z-index:999; display:flex; align-items:center; justify-content:center; }
+  .activation-box { background:var(--bg2); border:1px solid var(--border2); border-radius:20px; padding:2.5rem; width:440px; text-align:center; }
+  .activation-logo { width:80px; height:80px; border-radius:16px; overflow:hidden; margin:0 auto 1.25rem; }
+  .activation-logo img { width:100%; height:100%; object-fit:cover; }
+  .activation-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:3px; color:var(--text); margin-bottom:.25rem; }
+  .activation-sub { font-size:.72rem; color:var(--muted); letter-spacing:3px; text-transform:uppercase; margin-bottom:2rem; }
+  .activation-field { background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:.75rem 1rem; border-radius:10px; font-family:'DM Mono',monospace; font-size:.9rem; width:100%; outline:none; text-align:center; letter-spacing:2px; transition:.2s; margin-bottom:1rem; }
+  .activation-field:focus { border-color:var(--accent); }
+  .activation-btn { width:100%; background:var(--accent); color:#000; border:none; padding:.8rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:.9rem; cursor:pointer; transition:.2s; }
+  .activation-btn:hover { background:var(--green-dim); }
+  .activation-error { color:var(--red); font-size:.78rem; margin-top:.5rem; min-height:1rem; }
+  .activation-footer { margin-top:1.5rem; font-size:.7rem; color:var(--muted); }
+  .manual-btn { background:var(--bg3); border:1px solid var(--border2); color:var(--muted); padding:.35rem .75rem; border-radius:6px; font-size:.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:.2s; }
+  .manual-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .manual-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
+  .manual-box { background:var(--bg2); border:1px solid var(--border2); border-radius:16px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; }
+  .manual-box::-webkit-scrollbar { width:4px; }
+  .manual-box::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+  .manual-header { padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:var(--bg2); z-index:1; }
+  .manual-header h2 { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; color:var(--accent); }
+  .manual-body { padding:1.75rem; }
+  .manual-section { margin-bottom:2rem; }
+  .manual-section h3 { font-size:.75rem; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:.75rem; padding-bottom:.4rem; border-bottom:1px solid var(--border); }
+  .manual-section p, .manual-section li { font-size:.83rem; color:#c0b8b0; line-height:1.75; }
+  .manual-section ul { padding-left:1.25rem; }
+  .manual-section li { margin-bottom:.3rem; }
+  .manual-step { display:flex; gap:.75rem; margin-bottom:.6rem; align-items:flex-start; }
+  .manual-step-num { background:var(--accent); color:#000; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; flex-shrink:0; margin-top:.1rem; }
+  .manual-tip { background:var(--bg3); border-left:3px solid var(--accent); padding:.6rem .9rem; border-radius:0 8px 8px 0; margin-top:.75rem; font-size:.78rem; color:var(--muted); }
+
+
+  /* LAYOUT */
+  .app { display:grid; grid-template-columns: 320px 1fr; height: calc(100vh - 64px); }
+
+  /* SIDEBAR */
+  .sidebar { background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+  .sidebar-top { padding:1rem; border-bottom:1px solid var(--border); display:flex; gap:.5rem; flex-direction:column; }
+  .search-box { position:relative; }
+  .search-box input { width:100%; background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:.6rem .6rem .6rem 2.2rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.85rem; outline:none; transition:.2s; }
+  .search-box input:focus { border-color:var(--green); }
+  .search-box::before { content:'⚽'; position:absolute; left:.65rem; top:50%; transform:translateY(-50%); font-size:.8rem; }
+  .filter-row { display:flex; gap:.4rem; }
+  .filter-btn { flex:1; background:var(--bg3); border:1px solid var(--border2); color:var(--muted); padding:.4rem; border-radius:6px; font-size:.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:.2s; text-align:center; }
+  .filter-btn.active, .filter-btn:hover { border-color:var(--green); color:var(--green); background:var(--green-glow); }
+
+  .player-list { flex:1; overflow-y:auto; padding:.5rem; }
+  .player-list::-webkit-scrollbar { width:4px; }
+  .player-list::-webkit-scrollbar-track { background:transparent; }
+  .player-list::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+  .player-item { padding:.75rem; border-radius:10px; cursor:pointer; transition:.15s; margin-bottom:.3rem; border:1px solid transparent; display:flex; align-items:center; gap:.75rem; }
+  .player-item:hover { background:var(--bg3); border-color:var(--border2); }
+  .player-item.active { background:var(--green-glow); border-color:var(--green); }
+  .player-avatar { width:40px; height:40px; border-radius:10px; background:var(--bg3); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; border:1px solid var(--border2); font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--green); }
+  .player-info { flex:1; min-width:0; }
+  .player-name { font-weight:600; font-size:.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .player-meta { font-size:.72rem; color:var(--muted); display:flex; gap:.5rem; margin-top:.15rem; }
+  .player-score { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--green); line-height:1; }
+
+  .add-btn { margin:.75rem; background:var(--green); color:#000; border:none; padding:.7rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.88rem; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; gap:.4rem; }
+  .add-btn:hover { background:var(--green-dim); }
+
+  /* MAIN */
+  .main { overflow-y:auto; background:var(--bg); }
+  .main::-webkit-scrollbar { width:6px; }
+  .main::-webkit-scrollbar-track { background:transparent; }
+  .main::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+  /* EMPTY STATE */
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); gap:1rem; }
+  .empty-state .big-icon { font-size:4rem; opacity:.3; }
+  .empty-state p { font-size:.9rem; }
+
+  /* PLAYER DETAIL */
+  .player-detail { padding:2rem; }
+  .detail-header { display:flex; align-items:flex-start; gap:1.5rem; margin-bottom:2rem; }
+  .detail-avatar { width:80px; height:80px; border-radius:16px; background:var(--bg3); border:2px solid var(--green); display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:var(--green); flex-shrink:0; }
+  .detail-info { flex:1; }
+  .detail-name { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:2px; line-height:1; }
+  .detail-tags { display:flex; gap:.5rem; margin-top:.5rem; flex-wrap:wrap; }
+  .tag { background:var(--bg3); border:1px solid var(--border2); color:var(--muted); padding:.2rem .6rem; border-radius:20px; font-size:.72rem; font-family:'DM Mono',monospace; }
+  .tag.green { border-color:var(--green); color:var(--green); background:var(--green-glow); }
+  .detail-actions { display:flex; gap:.5rem; }
+  .btn { padding:.5rem 1rem; border-radius:8px; border:1px solid var(--border2); background:var(--bg3); color:var(--text); font-family:'DM Sans',sans-serif; font-size:.8rem; cursor:pointer; transition:.2s; }
+  .btn:hover { border-color:var(--green); color:var(--green); }
+  .btn.primary { background:var(--green); color:#000; border-color:var(--green); font-weight:600; }
+  .btn.primary:hover { background:var(--green-dim); }
+  .btn.danger { border-color:var(--red); color:var(--red); }
+  .btn.danger:hover { background:rgba(255,68,68,.1); }
+
+  /* TABS */
+  .tabs { display:flex; gap:.25rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem; }
+  .tab { padding:.6rem 1.2rem; font-size:.82rem; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:.2s; font-weight:500; }
+  .tab.active { color:var(--green); border-bottom-color:var(--green); }
+  .tab:hover { color:var(--text); }
+
+  /* GRID */
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+  .info-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; }
+  .info-card.full { grid-column:1/-1; }
+  .info-card h3 { font-size:.7rem; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:1rem; font-weight:500; }
+
+  /* FIELD GROUP */
+  .field-group { display:flex; flex-direction:column; gap:.6rem; }
+  .field { display:flex; justify-content:space-between; align-items:center; }
+  .field-label { font-size:.8rem; color:var(--muted); }
+  .field-value { font-size:.85rem; font-weight:500; }
+  .field-input { background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:.35rem .6rem; border-radius:6px; font-family:'DM Sans',sans-serif; font-size:.82rem; outline:none; transition:.2s; width:160px; }
+  .field-input:focus { border-color:var(--green); }
+  select.field-input { cursor:pointer; }
+
+  /* RATINGS */
+  .ratings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  .rating-item { }
+  .rating-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem; }
+  .rating-label { font-size:.8rem; color:var(--muted); }
+  .rating-value { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--green); line-height:1; }
+  .rating-bar { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
+  .rating-fill { height:100%; border-radius:3px; transition:.4s ease; }
+  .rating-input-row { display:flex; align-items:center; gap:.75rem; margin-top:.4rem; }
+  .rating-input-row input[type=range] { flex:1; accent-color:var(--green); cursor:pointer; }
+
+  /* OVERALL SCORE */
+  .overall-card { background:linear-gradient(135deg, #1a0f08, var(--card)); border:1px solid var(--green); border-radius:16px; padding:1.5rem; display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; }
+  .overall-num { font-family:'Bebas Neue',sans-serif; font-size:5rem; color:var(--green); line-height:1; }
+  .overall-info { flex:1; }
+  .overall-label { font-size:.7rem; text-transform:uppercase; letter-spacing:3px; color:var(--muted); margin-bottom:.25rem; }
+  .overall-grade { font-size:1.4rem; font-weight:600; }
+  .radar-container { width:140px; height:140px; flex-shrink:0; }
+
+  /* HISTORY */
+  .history-section { }
+  .history-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+  .history-header h3 { font-size:.7rem; text-transform:uppercase; letter-spacing:2px; color:var(--muted); font-weight:500; }
+  .eval-form { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
+  .eval-form h4 { font-size:.82rem; font-weight:600; margin-bottom:1rem; }
+  .eval-ratings { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+  .eval-notes { width:100%; background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:.6rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.82rem; resize:vertical; min-height:60px; outline:none; transition:.2s; }
+  .eval-notes:focus { border-color:var(--green); }
+  .eval-submit { background:var(--green); color:#000; border:none; padding:.6rem 1.5rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.82rem; cursor:pointer; transition:.2s; }
+  .eval-submit:hover { background:var(--green-dim); }
+
+  .history-list { display:flex; flex-direction:column; gap:.75rem; }
+  .history-item { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+  .history-item-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; }
+  .history-date { font-family:'DM Mono',monospace; font-size:.72rem; color:var(--muted); }
+  .history-score { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--green); }
+  .history-bars { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; }
+  .hbar { display:flex; align-items:center; gap:.5rem; }
+  .hbar-label { font-size:.7rem; color:var(--muted); width:60px; flex-shrink:0; }
+  .hbar-track { flex:1; height:4px; background:var(--bg3); border-radius:2px; overflow:hidden; }
+  .hbar-fill { height:100%; border-radius:2px; }
+  .hbar-val { font-family:'DM Mono',monospace; font-size:.7rem; color:var(--muted); width:20px; text-align:right; }
+  .history-notes { font-size:.78rem; color:var(--muted); margin-top:.5rem; font-style:italic; border-top:1px solid var(--border); padding-top:.5rem; }
+
+  /* CHART */
+  .chart-container { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
+  .chart-container h3 { font-size:.7rem; text-transform:uppercase; letter-spacing:2px; color:var(--muted); font-weight:500; margin-bottom:1rem; }
+  canvas { width:100% !important; }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
+  .modal { background:var(--bg2); border:1px solid var(--border2); border-radius:16px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+  .modal-header { padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; }
+  .modal-close { background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer; }
+  .modal-body { padding:1.5rem; display:flex; flex-direction:column; gap:.9rem; }
+  .form-group { display:flex; flex-direction:column; gap:.35rem; }
+  .form-group label { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:500; }
+  .form-group input, .form-group select { background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:.6rem .8rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.85rem; outline:none; transition:.2s; }
+  .form-group input:focus, .form-group select:focus { border-color:var(--green); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+  .modal-footer { padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:.5rem; }
+
+  .hidden { display:none !important; }
+  .badge { display:inline-block; padding:.15rem .5rem; border-radius:4px; font-size:.68rem; font-family:'DM Mono',monospace; font-weight:500; }
+  .badge-green { background:var(--green-glow); color:var(--green); border:1px solid rgba(0,200,83,.3); }
+  .badge-red { background:rgba(255,68,68,.1); color:var(--red); border:1px solid rgba(255,68,68,.3); }
+  .badge-yellow { background:rgba(255,214,0,.1); color:var(--yellow); border:1px solid rgba(255,214,0,.3); }
+
+
+  /* MEDIA TAB */
+  .media-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:.75rem; }
+  .media-item { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; position:relative; cursor:pointer; transition:.2s; }
+  .media-item:hover { border-color:var(--accent); }
+  .media-item:hover .media-delete { opacity:1; }
+  .media-thumb { width:100%; height:120px; object-fit:cover; display:block; background:var(--bg3); }
+  .media-thumb-video { width:100%; height:120px; object-fit:cover; display:block; }
+  .media-video-wrap { position:relative; width:100%; height:120px; background:#000; }
+  .media-play-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; pointer-events:none; }
+  .media-label { font-size:.72rem; color:var(--muted); padding:.4rem .6rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .media-type-badge { position:absolute; top:.4rem; left:.4rem; background:rgba(0,0,0,.6); color:#fff; font-size:.62rem; padding:.15rem .4rem; border-radius:4px; font-family:'DM Mono',monospace; }
+  .media-delete { position:absolute; top:.4rem; right:.4rem; background:rgba(255,68,68,.85); color:#fff; border:none; width:22px; height:22px; border-radius:50%; font-size:.75rem; cursor:pointer; opacity:0; transition:.2s; display:flex; align-items:center; justify-content:center; }
+  .media-upload-zone { border:2px dashed var(--border2); border-radius:12px; padding:2rem; text-align:center; cursor:pointer; transition:.2s; margin-bottom:1rem; }
+  .media-upload-zone:hover { border-color:var(--accent); background:var(--green-glow); }
+  .media-upload-zone input { display:none; }
+  .media-upload-icon { font-size:2rem; margin-bottom:.5rem; }
+  .media-upload-text { font-size:.82rem; color:var(--muted); }
+  .media-upload-text strong { color:var(--accent); }
+  .media-lightbox { position:fixed; inset:0; background:rgba(0,0,0,.95); z-index:400; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+  .media-lightbox img { max-width:90vw; max-height:80vh; border-radius:8px; object-fit:contain; }
+  .media-lightbox video { max-width:90vw; max-height:80vh; border-radius:8px; }
+  .media-lightbox-close { position:absolute; top:1.5rem; right:1.5rem; background:rgba(255,255,255,.1); border:none; color:#fff; width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; }
+  .media-lightbox-caption { margin-top:.75rem; font-size:.82rem; color:#888; }
+  /* EXPORT BUTTON */
+  .export-btn { background:var(--bg3); border:1px solid var(--border2); color:var(--muted); padding:.35rem .75rem; border-radius:6px; font-size:.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:.2s; }
+  .export-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none} }
+  .player-detail { animation: fadeIn .25s ease; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon" style="background:none;padding:0;overflow:hidden;"><img src="data:image/jpeg;base64,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" style="width:36px;height:36px;object-fit:cover;border-radius:8px;"></div>
+    <div>
+      <div class="logo-text">MY ACADEMY</div>
+      <div class="logo-sub">Player Management</div>
+    </div>
+  </div>
+  <div class="stargate-brand">Powered by <span>STARGATE Football Management</span></div>
+  <div style="display:flex;align-items:center;gap:1rem;">
+  <button class="manual-btn" id="manual-btn">📖 Manual</button>
+  <button class="export-btn" id="export-btn">📊 Εξαγωγή Excel</button>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-n" id="stat-total">0</div><div class="hstat-l">Παίκτες</div></div>
+    <div class="hstat"><div class="hstat-n" id="stat-avg">—</div><div class="hstat-l">Μέσος Όρος</div></div>
+    <div class="hstat"><div class="hstat-n" id="stat-evals">0</div><div class="hstat-l">Αξιολογήσεις</div></div>
+  </div>
+  </div>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Αναζήτηση παίκτη...">
+      </div>
+      <div class="filter-row" id="category-filters">
+        <button class="filter-btn active" data-cat="ALL">Όλοι</button>
+        <button class="filter-btn" data-cat="U12">U12</button>
+        <button class="filter-btn" data-cat="U14">U14</button>
+        <button class="filter-btn" data-cat="U16">U16</button>
+        <button class="filter-btn" data-cat="U19">U19</button>
+      </div>
+    </div>
+    <div class="player-list" id="player-list"></div>
+    <button class="add-btn" id="add-player-btn">+ Νέος Παίκτης</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <div class="empty-state" id="empty-state">
+      <div class="big-icon">⚽</div>
+      <p>Επίλεξε παίκτη ή πρόσθεσε νέο</p>
+    </div>
+    <div class="player-detail hidden" id="player-detail"></div>
+  </main>
+</div>
+
+<!-- MODAL: Add Player -->
+<div class="modal-overlay hidden" id="modal-add">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Νέος Παίκτης</h2>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Όνομα</label>
+          <input type="text" id="f-name" placeholder="π.χ. Νίκος">
+        </div>
+        <div class="form-group">
+          <label>Επώνυμο</label>
+          <input type="text" id="f-surname" placeholder="π.χ. Παπαδόπουλος">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ημ. Γέννησης</label>
+          <input type="date" id="f-dob">
+        </div>
+        <div class="form-group">
+          <label>Κατηγορία</label>
+          <select id="f-category">
+            <option>U8</option><option>U10</option><option>U12</option>
+            <option>U14</option><option>U16</option><option>U19</option><option>U21</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Θέση</label>
+          <select id="f-position">
+            <option>Τερματοφύλακας</option><option>Αμυντικός</option>
+            <option>Χαφ</option><option>Εξτρέμ</option><option>Επιθετικός</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Κυρίαρχο Πόδι</label>
+          <select id="f-foot">
+            <option>Δεξί</option><option>Αριστερό</option><option>Αμφίποδο</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ύψος (cm)</label>
+          <input type="number" id="f-height" placeholder="175">
+        </div>
+        <div class="form-group">
+          <label>Βάρος (kg)</label>
+          <input type="number" id="f-weight" placeholder="68">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Τηλ. Γονέα</label>
+          <input type="text" id="f-phone" placeholder="69XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>Email Γονέα</label>
+          <input type="email" id="f-email" placeholder="email@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Προηγούμενη Ομάδα</label>
+          <input type="text" id="f-prevteam" placeholder="π.χ. ΑΕΚ Αθηνών U12">
+        </div>
+        <div class="form-group">
+          <label>Σχολείο</label>
+          <input type="text" id="f-school" placeholder="π.χ. 5ο Γυμνάσιο Πειραιά">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ημ. Εγγραφής στην Ακαδημία</label>
+          <input type="date" id="f-joindate">
+        </div>
+        <div class="form-group">
+          <label>Αριθμός Μητρώου</label>
+          <input type="text" id="f-regnum" placeholder="π.χ. ACK-2024-001">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Σημειώσεις</label>
+        <input type="text" id="f-notes" placeholder="Προαιρετικά σχόλια...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="modal-cancel">Ακύρωση</button>
+      <button class="btn primary" id="modal-save">Αποθήκευση</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let players = JSON.parse(localStorage.getItem('academy_players') || '[]');
+let currentId = null;
+let activeFilter = 'ALL';
+let activeTab = 'profile';
+let searchTerm = '';
+let chartInstance = null;
+
+function save() { localStorage.setItem('academy_players', JSON.stringify(players)); }
+
+function getPlayer(id) { return players.find(p => p.id === id); }
+
+function calcOverall(ratings) {
+  if (!ratings || ratings.length === 0) return null;
+  const last = ratings[ratings.length - 1];
+  return Math.round((last.technical + last.physical + last.tactical + last.psychological) / 4 * 10) / 10;
+}
+
+function getGrade(score) {
+  if (!score) return { label: '—', cls: '' };
+  if (score >= 8.5) return { label: 'Εξαιρετικός', cls: 'badge-green' };
+  if (score >= 7) return { label: 'Πολύ Καλός', cls: 'badge-green' };
+  if (score >= 5.5) return { label: 'Καλός', cls: 'badge-yellow' };
+  if (score >= 4) return { label: 'Μέτριος', cls: 'badge-yellow' };
+  return { label: 'Χρειάζεται Δουλειά', cls: 'badge-red' };
+}
+
+function getRatingColor(v) {
+  if (v >= 8) return '#00C853';
+  if (v >= 6) return '#FFD600';
+  return '#FF4444';
+}
+
+function calcAge(dob) {
+  if (!dob) return '—';
+  const d = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - d.getFullYear();
+  if (today.getMonth() < d.getMonth() || (today.getMonth() === d.getMonth() && today.getDate() < d.getDate())) age--;
+  return age;
+}
+
+function initials(p) {
+  return ((p.name || '?')[0] + (p.surname || '?')[0]).toUpperCase();
+}
+
+// ─── HEADER STATS ─────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-total').textContent = players.length;
+  const scores = players.map(p => calcOverall(p.ratings)).filter(Boolean);
+  document.getElementById('stat-avg').textContent = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
+  const totalEvals = players.reduce((a,p) => a + (p.ratings||[]).length, 0);
+  document.getElementById('stat-evals').textContent = totalEvals;
+}
+
+// ─── SIDEBAR ──────────────────────────────────────────────
+function renderList() {
+  const list = document.getElementById('player-list');
+  let filtered = players;
+  if (activeFilter !== 'ALL') filtered = filtered.filter(p => p.category === activeFilter);
+  if (searchTerm) filtered = filtered.filter(p =>
+    (p.name+' '+p.surname).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;">Δεν βρέθηκαν παίκτες</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => {
+    const score = calcOverall(p.ratings);
+    return `<div class="player-item${p.id === currentId ? ' active' : ''}" data-id="${p.id}">
+      <div class="player-avatar">${initials(p)}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name} ${p.surname}</div>
+        <div class="player-meta">
+          <span>${p.category}</span>
+          <span>${p.position}</span>
+          <span>${calcAge(p.dob)} ετών</span>
+        </div>
+      </div>
+      <div class="player-score">${score !== null ? score : '—'}</div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.player-item').forEach(el => {
+    el.addEventListener('click', () => selectPlayer(el.dataset.id));
+  });
+}
+
+// ─── SELECT PLAYER ────────────────────────────────────────
+function selectPlayer(id) {
+  currentId = id;
+  activeTab = 'profile';
+  renderList();
+  renderDetail();
+}
+
+// ─── DETAIL ───────────────────────────────────────────────
+function renderDetail() {
+  const p = getPlayer(currentId);
+  if (!p) {
+    document.getElementById('empty-state').classList.remove('hidden');
+    document.getElementById('player-detail').classList.add('hidden');
+    return;
+  }
+  document.getElementById('empty-state').classList.add('hidden');
+  document.getElementById('player-detail').classList.remove('hidden');
+
+  const score = calcOverall(p.ratings);
+  const grade = getGrade(score);
+  const detail = document.getElementById('player-detail');
+
+  detail.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-avatar">${initials(p)}</div>
+      <div class="detail-info">
+        <div class="detail-name">${p.name} ${p.surname}</div>
+        <div class="detail-tags">
+          <span class="tag">${p.category}</span>
+          <span class="tag">${p.position}</span>
+          <span class="tag">${p.foot}</span>
+          <span class="tag">${calcAge(p.dob)} ετών</span>
+          ${score !== null ? `<span class="badge ${grade.cls}">${grade.label}</span>` : ''}
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn danger" id="del-btn">🗑 Διαγραφή</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab${activeTab==='profile'?' active':''}" data-tab="profile">Προφίλ</div>
+      <div class="tab${activeTab==='ratings'?' active':''}" data-tab="ratings">Αξιολόγηση</div>
+      <div class="tab${activeTab==='history'?' active':''}" data-tab="history">Ιστορικό</div>
+      <div class="tab${activeTab==='medical'?' active':''}" data-tab="medical">🏥 Υγεία</div>
+      <div class="tab${activeTab==='media'?' active':''}" data-tab="media">📸 Μέσα</div>
+      <div class="tab${activeTab==='regulations'?' active':''}" data-tab="regulations">📋 Κανονισμοί</div>
+    </div>
+
+    <div id="tab-content"></div>
+  `;
+
+  detail.querySelector('#del-btn').addEventListener('click', () => deletePlayer(currentId));
+  detail.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => { activeTab = t.dataset.tab; renderDetail(); });
+  });
+
+  if (activeTab === 'profile') renderProfileTab(p);
+  else if (activeTab === 'ratings') renderRatingsTab(p);
+  else if (activeTab === 'history') renderHistoryTab(p);
+  else if (activeTab === 'medical') renderMedicalTab(p);
+  else if (activeTab === 'media') renderMediaTab(p);
+  else renderRegulationsTab(p);
+}
+
+function renderProfileTab(p) {
+  const tc = document.getElementById('tab-content');
+  const joinDate = p.joindate ? new Date(p.joindate).toLocaleDateString('el-GR') : '—';
+  const joinDays = p.joindate ? Math.floor((new Date() - new Date(p.joindate)) / (1000*60*60*24)) : null;
+
+  tc.innerHTML = `
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Προσωπικά Στοιχεία</h3>
+        <div class="field-group">
+          <div class="field"><span class="field-label">Όνομα</span><span class="field-value">${p.name} ${p.surname}</span></div>
+          <div class="field"><span class="field-label">Ηλικία</span><span class="field-value">${calcAge(p.dob)} ετών</span></div>
+          <div class="field"><span class="field-label">Ημ. Γέννησης</span><span class="field-value">${p.dob ? new Date(p.dob).toLocaleDateString('el-GR') : '—'}</span></div>
+          <div class="field"><span class="field-label">Κυρίαρχο Πόδι</span><span class="field-value">${p.foot}</span></div>
+          <div class="field"><span class="field-label">Σχολείο</span><span class="field-value">${p.school || '—'}</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>Σωματομετρικά & Θέση</h3>
+        <div class="field-group">
+          <div class="field"><span class="field-label">Ύψος</span><span class="field-value">${p.height ? p.height+' cm' : '—'}</span></div>
+          <div class="field"><span class="field-label">Βάρος</span><span class="field-value">${p.weight ? p.weight+' kg' : '—'}</span></div>
+          <div class="field"><span class="field-label">Κατηγορία</span><span class="field-value">${p.category}</span></div>
+          <div class="field"><span class="field-label">Θέση</span><span class="field-value">${p.position}</span></div>
+          <div class="field"><span class="field-label">Προηγ. Ομάδα</span><span class="field-value">${p.prevteam || '—'}</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>Στοιχεία Ακαδημίας</h3>
+        <div class="field-group">
+          <div class="field"><span class="field-label">Εγγραφή</span><span class="field-value">${joinDate}</span></div>
+          <div class="field"><span class="field-label">Ημέρες στην Ακαδημία</span><span class="field-value" style="color:var(--accent)">${joinDays !== null ? joinDays+' ημέρες' : '—'}</span></div>
+          <div class="field"><span class="field-label">Αρ. Μητρώου</span><span class="field-value">${p.regnum || '—'}</span></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>Επικοινωνία Γονέα</h3>
+        <div class="field-group">
+          <div class="field"><span class="field-label">Τηλέφωνο</span><span class="field-value">${p.phone || '—'}</span></div>
+          <div class="field"><span class="field-label">Email</span><span class="field-value">${p.email || '—'}</span></div>
+        </div>
+      </div>
+      <div class="info-card full">
+        <h3>Σημειώσεις</h3>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.6;">${p.notes || 'Δεν υπάρχουν σημειώσεις.'}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRatingsTab(p) {
+  const score = calcOverall(p.ratings);
+  const grade = getGrade(score);
+  const last = p.ratings && p.ratings.length ? p.ratings[p.ratings.length-1] : null;
+  const tc = document.getElementById('tab-content');
+
+  tc.innerHTML = `
+    <div class="overall-card">
+      <div class="overall-num">${score !== null ? score : '—'}</div>
+      <div class="overall-info">
+        <div class="overall-label">Συνολική Βαθμολογία</div>
+        <div class="overall-grade">${score !== null ? `<span class="badge ${grade.cls}">${grade.label}</span>` : 'Καμία αξιολόγηση ακόμα'}</div>
+        <div style="margin-top:.5rem;font-size:.78rem;color:var(--muted)">${(p.ratings||[]).length} αξιολογήσεις καταγεγραμμένες</div>
+      </div>
+      <canvas class="radar-container" id="radar-canvas" width="140" height="140"></canvas>
+    </div>
+
+    <div class="info-card" style="margin-bottom:1rem;">
+      <h3>Τελευταία Αξιολόγηση ${last ? `<span style="float:right;color:var(--muted)">${new Date(last.date).toLocaleDateString('el-GR')}</span>` : ''}</h3>
+      <div class="ratings-grid" id="current-ratings">
+        ${['technical','physical','tactical','psychological'].map(key => {
+          const labels = {technical:'Τεχνικός',physical:'Φυσικός',tactical:'Τακτικός',psychological:'Ψυχολογικός'};
+          const val = last ? last[key] : 5;
+          return `<div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">${labels[key]}</span>
+              <span class="rating-value" id="rv-${key}">${val}</span>
+            </div>
+            <div class="rating-bar"><div class="rating-fill" id="rf-${key}" style="width:${val*10}%;background:${getRatingColor(val)}"></div></div>
+            <div class="rating-input-row">
+              <input type="range" min="1" max="10" step="0.5" value="${val}" id="ri-${key}" data-key="${key}">
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:1rem;">
+        <textarea class="eval-notes" id="eval-notes-current" placeholder="Σχόλια αξιολόγησης...">${last ? last.notes||'' : ''}</textarea>
+      </div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem;">
+        <button class="eval-submit" id="save-rating-btn">💾 Αποθήκευση Νέας Αξιολόγησης</button>
+      </div>
+    </div>
+  `;
+
+  // Sliders live update
+  ['technical','physical','tactical','psychological'].forEach(key => {
+    const slider = document.getElementById(`ri-${key}`);
+    slider.addEventListener('input', () => {
+      const v = parseFloat(slider.value);
+      document.getElementById(`rv-${key}`).textContent = v;
+      document.getElementById(`rf-${key}`).style.width = v*10+'%';
+      document.getElementById(`rf-${key}`).style.background = getRatingColor(v);
+      drawRadar();
+    });
+  });
+
+  document.getElementById('save-rating-btn').addEventListener('click', () => {
+    const entry = {
+      date: new Date().toISOString(),
+      technical: parseFloat(document.getElementById('ri-technical').value),
+      physical: parseFloat(document.getElementById('ri-physical').value),
+      tactical: parseFloat(document.getElementById('ri-tactical').value),
+      psychological: parseFloat(document.getElementById('ri-psychological').value),
+      notes: document.getElementById('eval-notes-current').value
+    };
+    if (!p.ratings) p.ratings = [];
+    p.ratings.push(entry);
+    save();
+    updateStats();
+    renderDetail();
+  });
+
+  drawRadar(last);
+}
+
+function renderMedicalTab(p) {
+  const tc = document.getElementById('tab-content');
+  const medical = p.medical || { bloodtype:'', allergies:'', conditions:'', medications:'', lastexam:'', injuries:[] };
+
+  tc.innerHTML = `
+    <div class="info-grid">
+      <div class="info-card full" style="border-color:var(--accent)">
+        <h3>⚕️ Υγειονομικός Φάκελος — ${p.name} ${p.surname}</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.5rem;">
+          <div class="form-group">
+            <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Ομάδα Αίματος</label>
+            <select class="field-input" id="med-bloodtype" style="width:100%">
+              <option value="">—</option>
+              ${['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(t=>`<option${medical.bloodtype===t?' selected':''}>${t}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Τελευταία Ιατρική Εξέταση</label>
+            <input type="date" class="field-input" id="med-lastexam" value="${medical.lastexam||''}" style="width:100%">
+          </div>
+          <div class="form-group">
+            <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Αλλεργίες</label>
+            <input type="text" class="field-input" id="med-allergies" value="${medical.allergies||''}" placeholder="π.χ. Πενικιλίνη" style="width:100%">
+          </div>
+          <div class="form-group">
+            <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Φαρμακευτική Αγωγή</label>
+            <input type="text" class="field-input" id="med-medications" value="${medical.medications||''}" placeholder="π.χ. Κανένα" style="width:100%">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Παθήσεις / Ιστορικό</label>
+            <textarea class="eval-notes" id="med-conditions" placeholder="π.χ. Άσθμα, Καρδιακά...">${medical.conditions||''}</textarea>
+          </div>
+        </div>
+        <button class="eval-submit" id="save-medical-btn" style="margin-top:1rem;">💾 Αποθήκευση Υγειονομικών</button>
+      </div>
+
+      <div class="info-card full">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h3>🩹 Ιστορικό Τραυματισμών</h3>
+          <button class="btn primary" id="add-injury-btn" style="font-size:.75rem;padding:.35rem .8rem;">+ Νέος Τραυματισμός</button>
+        </div>
+        <div id="injury-form" class="hidden" style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:1rem;margin-bottom:1rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+            <div class="form-group">
+              <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Τύπος Τραυματισμού</label>
+              <input type="text" class="field-input" id="inj-type" placeholder="π.χ. Θλάση ισχιοκνημιαίων" style="width:100%">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Ημερομηνία</label>
+              <input type="date" class="field-input" id="inj-date" style="width:100%">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Εκτιμώμενη Επιστροφή</label>
+              <input type="date" class="field-input" id="inj-return" style="width:100%">
+            </div>
+            <div class="form-group">
+              <label style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Κατάσταση</label>
+              <select class="field-input" id="inj-status" style="width:100%">
+                <option>Ενεργός</option><option>Σε Αποθεραπεία</option><option>Αποθεραπεύτηκε</option>
+              </select>
+            </div>
+          </div>
+          <textarea class="eval-notes" id="inj-notes" placeholder="Επιπλέον σημειώσεις..."></textarea>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button class="eval-submit" id="save-injury-btn">Αποθήκευση</button>
+            <button class="btn" id="cancel-injury-btn">Ακύρωση</button>
+          </div>
+        </div>
+        <div id="injury-list">
+          ${(medical.injuries||[]).length === 0
+            ? `<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:.82rem;">Δεν υπάρχουν καταγεγραμμένοι τραυματισμοί ✅</div>`
+            : (medical.injuries||[]).slice().reverse().map((inj,i) => `
+              <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:.9rem;margin-bottom:.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:600;font-size:.88rem;">${inj.type}</span>
+                  <span class="badge ${inj.status==='Αποθεραπεύτηκε'?'badge-green':inj.status==='Ενεργός'?'badge-red':'badge-yellow'}">${inj.status}</span>
+                </div>
+                <div style="display:flex;gap:1.5rem;margin-top:.4rem;font-size:.75rem;color:var(--muted);">
+                  <span>📅 ${inj.date ? new Date(inj.date).toLocaleDateString('el-GR') : '—'}</span>
+                  <span>🔄 Επιστροφή: ${inj.return ? new Date(inj.return).toLocaleDateString('el-GR') : '—'}</span>
+                </div>
+                ${inj.notes ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.4rem;font-style:italic;">${inj.notes}</div>` : ''}
+              </div>`).join('')
+          }
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('save-medical-btn').addEventListener('click', () => {
+    if (!p.medical) p.medical = { injuries: [] };
+    p.medical.bloodtype = document.getElementById('med-bloodtype').value;
+    p.medical.lastexam = document.getElementById('med-lastexam').value;
+    p.medical.allergies = document.getElementById('med-allergies').value;
+    p.medical.medications = document.getElementById('med-medications').value;
+    p.medical.conditions = document.getElementById('med-conditions').value;
+    save();
+    const btn = document.getElementById('save-medical-btn');
+    btn.textContent = '✅ Αποθηκεύτηκε!';
+    setTimeout(() => btn.textContent = '💾 Αποθήκευση Υγειονομικών', 2000);
+  });
+
+  document.getElementById('add-injury-btn').addEventListener('click', () => {
+    document.getElementById('injury-form').classList.toggle('hidden');
+  });
+  document.getElementById('cancel-injury-btn').addEventListener('click', () => {
+    document.getElementById('injury-form').classList.add('hidden');
+  });
+  document.getElementById('save-injury-btn').addEventListener('click', () => {
+    const type = document.getElementById('inj-type').value.trim();
+    if (!type) return;
+    if (!p.medical) p.medical = { injuries: [] };
+    if (!p.medical.injuries) p.medical.injuries = [];
+    p.medical.injuries.push({
+      type,
+      date: document.getElementById('inj-date').value,
+      return: document.getElementById('inj-return').value,
+      status: document.getElementById('inj-status').value,
+      notes: document.getElementById('inj-notes').value
+    });
+    save();
+    renderDetail();
+  });
+}
+
+
+function renderMediaTab(p) {
+  const tc = document.getElementById('tab-content');
+  const media = p.media || [];
+
+  tc.innerHTML = `
+    <div class="info-card full" style="margin-bottom:1rem;">
+      <h3>📸 Φωτογραφίες & Βίντεο — ${p.name} ${p.surname}</h3>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:.25rem;">${media.length} αρχεία αποθηκευμένα</p>
+    </div>
+
+    <label class="media-upload-zone" id="upload-zone">
+      <input type="file" id="media-upload" accept="image/*,video/*" multiple>
+      <div class="media-upload-icon">📁</div>
+      <div class="media-upload-text"><strong>Κλικ για ανέβασμα</strong> ή σύρτε αρχεία εδώ<br>
+      <span style="font-size:.72rem;">Υποστηρίζονται: JPG, PNG, GIF, MP4, MOV, AVI</span></div>
+    </label>
+
+    <div class="media-grid" id="media-grid">
+      ${media.length === 0
+        ? `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;">Δεν υπάρχουν αρχεία ακόμα. Ανεβάστε φωτογραφίες ή βίντεο παραπάνω.</div>`
+        : media.map((m, i) => {
+            const isVideo = m.type && m.type.startsWith('video');
+            return `<div class="media-item" data-index="${i}">
+              ${isVideo
+                ? `<div class="media-video-wrap"><video class="media-thumb-video" src="${m.data}" preload="metadata"></video><div class="media-play-icon">▶️</div></div>`
+                : `<img class="media-thumb" src="${m.data}" alt="${m.name}">`
+              }
+              <span class="media-type-badge">${isVideo ? '📹' : '📷'}</span>
+              <button class="media-delete" data-del="${i}" title="Διαγραφή">✕</button>
+              <div class="media-label">${m.name || 'Αρχείο'}</div>
+            </div>`;
+          }).join('')
+      }
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="media-lightbox hidden" id="media-lightbox">
+      <button class="media-lightbox-close" id="lightbox-close">✕</button>
+      <div id="lightbox-content"></div>
+      <div class="media-lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  `;
+
+  // Upload handler
+  document.getElementById('media-upload').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    let loaded = 0;
+    if (!p.media) p.media = [];
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        p.media.push({ name: file.name, type: file.type, data: ev.target.result });
+        loaded++;
+        if (loaded === files.length) {
+          save();
+          renderDetail();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Delete handler
+  document.querySelectorAll('.media-delete').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const idx = parseInt(this.dataset.del);
+      if (confirm('Διαγραφή αρχείου;')) {
+        p.media.splice(idx, 1);
+        save();
+        renderDetail();
+      }
+    });
+  });
+
+  // Lightbox handler
+  document.querySelectorAll('.media-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+      if (e.target.classList.contains('media-delete')) return;
+      const idx = parseInt(this.dataset.index);
+      const m = p.media[idx];
+      if (!m) return;
+      const isVideo = m.type && m.type.startsWith('video');
+      const lb = document.getElementById('media-lightbox');
+      const lc = document.getElementById('lightbox-content');
+      const cap = document.getElementById('lightbox-caption');
+      lc.innerHTML = isVideo
+        ? `<video src="${m.data}" controls autoplay style="max-width:90vw;max-height:80vh;border-radius:8px;"></video>`
+        : `<img src="${m.data}" style="max-width:90vw;max-height:80vh;border-radius:8px;object-fit:contain;">`;
+      cap.textContent = m.name || '';
+      lb.classList.remove('hidden');
+    });
+  });
+
+  document.getElementById('lightbox-close').addEventListener('click', () => {
+    document.getElementById('media-lightbox').classList.add('hidden');
+    document.getElementById('lightbox-content').innerHTML = '';
+  });
+  document.getElementById('media-lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.add('hidden');
+      document.getElementById('lightbox-content').innerHTML = '';
+    }
+  });
+}
+
+function renderRegulationsTab(p) {
+  const tc = document.getElementById('tab-content');
+  tc.innerHTML = `
+    <div class="info-card full" style="margin-bottom:1rem;">
+      <h3>📋 Κανονισμοί & Επίσημα Έγγραφα</h3>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.25rem;line-height:1.6;">Άμεση πρόσβαση στους επίσημους κανονισμούς FIFA και UEFA για ακαδημίες νέων.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+
+      <div class="info-card" style="border-color:rgba(255,109,0,.4)">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🌍</div>
+        <h3 style="color:var(--accent);margin-bottom:.5rem;font-size:.9rem;letter-spacing:0;text-transform:none;font-weight:700;">FIFA — Κανονισμοί</h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
+          <a href="https://www.fifa.com/about-fifa/official-documents/regulations-status-and-transfer-of-players" target="_blank" class="reg-link">📄 Κανονισμοί Μεταγραφών (RSTP)</a>
+          <a href="https://www.fifa.com/about-fifa/official-documents/youth-football-regulations" target="_blank" class="reg-link">👶 Κανονισμοί Ακαδημιών Νέων</a>
+          <a href="https://www.tms.fifa.com" target="_blank" class="reg-link">🔗 FIFA TMS — Transfer Matching System</a>
+          <a href="https://www.fifa.com/about-fifa/official-documents/laws-of-the-game" target="_blank" class="reg-link">📖 Νόμοι του Παιχνιδιού (LOTG)</a>
+        </div>
+      </div>
+
+      <div class="info-card" style="border-color:rgba(41,182,246,.4)">
+        <div style="font-size:2rem;margin-bottom:.75rem;">⭐</div>
+        <h3 style="color:var(--blue);margin-bottom:.5rem;font-size:.9rem;letter-spacing:0;text-transform:none;font-weight:700;">UEFA — Κανονισμοί</h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
+          <a href="https://www.uefa.com/insideuefa/documentlibrary/regulations/uefayouthleague/" target="_blank" class="reg-link" style="border-color:rgba(41,182,246,.3)">🏆 UEFA Youth League Regulations</a>
+          <a href="https://www.uefa.com/insideuefa/documentlibrary/regulations/clubacademyprogram/" target="_blank" class="reg-link" style="border-color:rgba(41,182,246,.3)">🏫 UEFA Club Academy Programme</a>
+          <a href="https://www.uefa.com/insideuefa/documentlibrary/regulations/grassroots/" target="_blank" class="reg-link" style="border-color:rgba(41,182,246,.3)">🌱 UEFA Grassroots Charter</a>
+          <a href="https://www.uefa.com/insideuefa/documentlibrary/regulations/coachingconventions/" target="_blank" class="reg-link" style="border-color:rgba(41,182,246,.3)">📚 Κανονισμοί Αδειοδότησης Προπονητών</a>
+        </div>
+      </div>
+
+      <div class="info-card" style="border-color:rgba(255,214,0,.3)">
+        <div style="font-size:2rem;margin-bottom:.75rem;">🇬🇷</div>
+        <h3 style="color:var(--yellow);margin-bottom:.5rem;font-size:.9rem;letter-spacing:0;text-transform:none;font-weight:700;">ΕΠΟ — Ελληνική Ποδοσφαιρική Ομοσπονδία</h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
+          <a href="https://www.epo.gr/el/kanones-kai-kanonismoi" target="_blank" class="reg-link" style="border-color:rgba(255,214,0,.3)">📋 Κανόνες & Κανονισμοί ΕΠΟ</a>
+          <a href="https://www.epo.gr/el/akademies-neoon" target="_blank" class="reg-link" style="border-color:rgba(255,214,0,.3)">👦 Ακαδημίες Νέων ΕΠΟ</a>
+          <a href="https://www.epo.gr/el/meteggrafia" target="_blank" class="reg-link" style="border-color:rgba(255,214,0,.3)">🔄 Μεταγραφές & Δηλώσεις</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div style="font-size:2rem;margin-bottom:.75rem;">📌</div>
+        <h3 style="margin-bottom:.5rem;font-size:.9rem;letter-spacing:0;text-transform:none;font-weight:700;color:var(--text);">Χρήσιμοι Σύνδεσμοι</h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
+          <a href="https://www.tms.fifa.com/tms/portal/Login.xhtml" target="_blank" class="reg-link">🔐 FIFA TMS Login</a>
+          <a href="https://comet.UEFA.com" target="_blank" class="reg-link">🌐 UEFA COMET Platform</a>
+          <a href="https://www.epo.gr" target="_blank" class="reg-link">🏛️ EPO.gr — Επίσημη Ιστοσελίδα</a>
+          <a href="https://gsis.sport.gov.gr" target="_blank" class="reg-link">🏛️ ΓΓΑ — Αθλητικοί Σύλλογοι</a>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .reg-link { display:block; padding:.5rem .75rem; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--text); text-decoration:none; font-size:.78rem; transition:.2s; }
+      .reg-link:hover { border-color:var(--accent); color:var(--accent); background:var(--green-glow); }
+    </style>
+  `;
+}
+
+
+  const canvas = document.getElementById('radar-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 70, cy = 70, r = 55;
+  const labels = ['Τεχν.','Φυσ.','Τακτ.','Ψυχ.'];
+  const keys = ['technical','physical','tactical','psychological'];
+
+  const getVal = (key) => {
+    const el = document.getElementById(`ri-${key}`);
+    if (el) return parseFloat(el.value);
+    return last ? last[key] : 5;
+  };
+
+  ctx.clearRect(0,0,140,140);
+
+  // Grid
+  for (let i = 1; i <= 5; i++) {
+    ctx.beginPath();
+    for (let j = 0; j < 4; j++) {
+      const angle = (j/4)*Math.PI*2 - Math.PI/2;
+      const x = cx + Math.cos(angle)*(r*i/5);
+      const y = cy + Math.sin(angle)*(r*i/5);
+      j === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.stroke();
+  }
+
+  // Axes
+  for (let j = 0; j < 4; j++) {
+    const angle = (j/4)*Math.PI*2 - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.stroke();
+  }
+
+  // Data
+  ctx.beginPath();
+  keys.forEach((key, j) => {
+    const angle = (j/4)*Math.PI*2 - Math.PI/2;
+    const val = getVal(key)/10;
+    const x = cx + Math.cos(angle)*r*val;
+    const y = cy + Math.sin(angle)*r*val;
+    j === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,200,83,0.25)';
+  ctx.fill();
+  ctx.strokeStyle = '#00C853';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Labels
+  ctx.font = '9px DM Sans';
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.textAlign = 'center';
+  labels.forEach((label,j) => {
+    const angle = (j/4)*Math.PI*2 - Math.PI/2;
+    const x = cx + Math.cos(angle)*(r+14);
+    const y = cy + Math.sin(angle)*(r+14);
+    ctx.fillText(label,x,y+3);
+  });
+}
+
+function renderHistoryTab(p) {
+  const tc = document.getElementById('tab-content');
+  const ratings = (p.ratings || []).slice().reverse();
+
+  let chartHTML = '';
+  if (ratings.length >= 2) {
+    chartHTML = `<div class="chart-container"><h3>Εξέλιξη Βαθμολογίας</h3><canvas id="progress-chart" height="120"></canvas></div>`;
+  }
+
+  tc.innerHTML = `
+    ${chartHTML}
+    <div class="history-section">
+      <div class="history-header"><h3>Αρχείο Αξιολογήσεων (${ratings.length})</h3></div>
+      ${ratings.length === 0 ? `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;">Δεν υπάρχουν αξιολογήσεις ακόμα.<br>Πήγαινε στην καρτέλα Αξιολόγηση.</div>` : ''}
+      <div class="history-list">
+        ${ratings.map((r,i) => {
+          const avg = ((r.technical+r.physical+r.tactical+r.psychological)/4).toFixed(1);
+          return `<div class="history-item">
+            <div class="history-item-header">
+              <span class="history-date">${new Date(r.date).toLocaleDateString('el-GR',{day:'2-digit',month:'short',year:'numeric'})}</span>
+              <span class="history-score">${avg}</span>
+            </div>
+            <div class="history-bars">
+              ${[['Τεχνικός',r.technical],['Φυσικός',r.physical],['Τακτικός',r.tactical],['Ψυχολογικός',r.psychological]].map(([label,val])=>`
+                <div class="hbar">
+                  <span class="hbar-label">${label}</span>
+                  <div class="hbar-track"><div class="hbar-fill" style="width:${val*10}%;background:${getRatingColor(val)}"></div></div>
+                  <span class="hbar-val">${val}</span>
+                </div>`).join('')}
+            </div>
+            ${r.notes ? `<div class="history-notes">${r.notes}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  if (ratings.length >= 2) {
+    setTimeout(() => drawProgressChart(p), 50);
+  }
+}
+
+function drawProgressChart(p) {
+  const canvas = document.getElementById('progress-chart');
+  if (!canvas) return;
+  const ratings = p.ratings || [];
+  const labels = ratings.map(r => new Date(r.date).toLocaleDateString('el-GR',{day:'2-digit',month:'short'}));
+  const overall = ratings.map(r => ((r.technical+r.physical+r.tactical+r.psychological)/4).toFixed(1));
+  const technical = ratings.map(r => r.technical);
+  const physical = ratings.map(r => r.physical);
+  const tactical = ratings.map(r => r.tactical);
+  const psychological = ratings.map(r => r.psychological);
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+  script.onload = () => {
+    chartInstance = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Συνολικός', data: overall, borderColor: '#00C853', backgroundColor: 'rgba(0,200,83,0.1)', borderWidth: 2.5, tension: 0.4, fill: true, pointBackgroundColor: '#00C853', pointRadius: 4 },
+          { label: 'Τεχνικός', data: technical, borderColor: '#29B6F6', borderWidth: 1.5, tension: 0.4, fill: false, pointRadius: 3, borderDash: [4,2] },
+          { label: 'Φυσικός', data: physical, borderColor: '#FFD600', borderWidth: 1.5, tension: 0.4, fill: false, pointRadius: 3, borderDash: [4,2] },
+          { label: 'Τακτικός', data: tactical, borderColor: '#FF7043', borderWidth: 1.5, tension: 0.4, fill: false, pointRadius: 3, borderDash: [4,2] },
+          { label: 'Ψυχολογικός', data: psychological, borderColor: '#AB47BC', borderWidth: 1.5, tension: 0.4, fill: false, pointRadius: 3, borderDash: [4,2] },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#5a7278', font: { family: 'DM Sans', size: 11 }, boxWidth: 16 } }
+        },
+        scales: {
+          x: { ticks: { color: '#5a7278', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { min: 0, max: 10, ticks: { color: '#5a7278', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+      }
+    });
+  };
+  if (window.Chart) {
+    script.onload();
+  } else {
+    document.head.appendChild(script);
+  }
+}
+
+// ─── DELETE ───────────────────────────────────────────────
+function deletePlayer(id) {
+  if (!confirm('Διαγραφή παίκτη;')) return;
+  players = players.filter(p => p.id !== id);
+  currentId = null;
+  save();
+  updateStats();
+  renderList();
+  document.getElementById('empty-state').classList.remove('hidden');
+  document.getElementById('player-detail').classList.add('hidden');
+}
+
+// ─── MODAL ────────────────────────────────────────────────
+document.getElementById('add-player-btn').addEventListener('click', () => {
+  document.getElementById('modal-add').classList.remove('hidden');
+});
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal-add').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-add')) closeModal();
+});
+
+function closeModal() { document.getElementById('modal-add').classList.add('hidden'); }
+
+document.getElementById('modal-save').addEventListener('click', () => {
+  const name = document.getElementById('f-name').value.trim();
+  const surname = document.getElementById('f-surname').value.trim();
+  if (!name || !surname) { alert('Συμπλήρωσε όνομα και επώνυμο'); return; }
+  const player = {
+    id: Date.now().toString(),
+    name, surname,
+    dob: document.getElementById('f-dob').value,
+    category: document.getElementById('f-category').value,
+    position: document.getElementById('f-position').value,
+    foot: document.getElementById('f-foot').value,
+    height: document.getElementById('f-height').value,
+    weight: document.getElementById('f-weight').value,
+    phone: document.getElementById('f-phone').value,
+    email: document.getElementById('f-email').value,
+    prevteam: document.getElementById('f-prevteam').value,
+    school: document.getElementById('f-school').value,
+    joindate: document.getElementById('f-joindate').value,
+    regnum: document.getElementById('f-regnum').value,
+    notes: document.getElementById('f-notes').value,
+    ratings: [],
+    medical: { bloodtype:'', allergies:'', conditions:'', medications:'', lastexam:'', injuries:[] }
+  };
+  players.push(player);
+  save();
+  updateStats();
+  closeModal();
+  ['f-name','f-surname','f-dob','f-height','f-weight','f-phone','f-email','f-notes','f-prevteam','f-school','f-joindate','f-regnum'].forEach(id => document.getElementById(id).value = '');
+  renderList();
+  selectPlayer(player.id);
+});
+
+// ─── FILTERS ──────────────────────────────────────────────
+document.getElementById('category-filters').addEventListener('click', e => {
+  if (!e.target.dataset.cat) return;
+  activeFilter = e.target.dataset.cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === activeFilter));
+  renderList();
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value;
+  renderList();
+});
+
+// ─── INIT ─────────────────────────────────────────────────
+updateStats();
+renderList();
+
+// Demo player if empty
+if (players.length === 0) {
+  players = [{
+    id: '1',
+    name: 'Νίκος', surname: 'Παπαδόπουλος',
+    dob: '2010-03-15', category: 'U14', position: 'Χαφ', foot: 'Δεξί',
+    height: '162', weight: '52', phone: '6912345678', email: 'papa@email.com',
+    prevteam: 'ΑΟ Κερατσινίου U12', school: '5ο Γυμνάσιο Πειραιά',
+    joindate: '2023-09-01', regnum: 'ACK-2023-001',
+    notes: 'Ταλαντούχος χαφ με εξαιρετική τεχνική. Χρειάζεται δουλειά στη φυσική κατάσταση.',
+    ratings: [
+      { date: '2024-09-01T10:00:00Z', technical:7, physical:5.5, tactical:6, psychological:7, notes: 'Πρώτη αξιολόγηση σεζόν.' },
+      { date: '2024-11-15T10:00:00Z', technical:7.5, physical:6, tactical:6.5, psychological:7.5, notes: 'Εμφανής πρόοδος στη φυσική.' },
+      { date: '2025-02-01T10:00:00Z', technical:8, physical:6.5, tactical:7, psychological:8, notes: 'Εξαιρετική εξέλιξη.' },
+    ],
+    medical: { bloodtype:'A+', allergies:'Καμία', conditions:'', medications:'Κανένα', lastexam:'2024-09-01', injuries:[
+      { type:'Θλάση ισχιοκνημιαίων', date:'2024-10-15', return:'2024-11-10', status:'Αποθεραπεύτηκε', notes:'Αριστερός μηρός. 3 εβδομάδες εκτός.' }
+    ]}
+  },{
+    id: '2',
+    name: 'Κώστας', surname: 'Αντωνίου',
+    dob: '2009-07-22', category: 'U16', position: 'Επιθετικός', foot: 'Αριστερό',
+    height: '174', weight: '65', phone: '6987654321', email: 'ant@email.com',
+    prevteam: 'Ολυμπιακός U14', school: '3ο Λύκειο Πειραιά',
+    joindate: '2022-09-05', regnum: 'ACK-2022-007',
+    notes: 'Γρήγορος εξτρέμ με καλό τελείωμα.',
+    ratings: [
+      { date: '2024-09-05T10:00:00Z', technical:8, physical:7.5, tactical:6.5, psychological:7, notes: '' },
+      { date: '2025-01-10T10:00:00Z', technical:8.5, physical:8, tactical:7, psychological:7.5, notes: 'Πολύ καλή σεζόν.' },
+    ],
+    medical: { bloodtype:'O+', allergies:'Πενικιλίνη', conditions:'Ήπιο άσθμα κόπωσης', medications:'Εισπνευστήρας (προφυλακτικά)', lastexam:'2024-08-20', injuries:[] }
+  }];
+  save();
+  updateStats();
+  renderList();
+  selectPlayer('1');
+}
+
+
+// ─── EXCEL EXPORT ─────────────────────────────────────────────
+document.getElementById('export-btn').addEventListener('click', exportToExcel);
+
+function exportToExcel() {
+  if (players.length === 0) { alert('Δεν υπάρχουν παίκτες για εξαγωγή.'); return; }
+
+  // Build CSV content (Excel-compatible UTF-8 BOM)
+  const BOM = '\uFEFF';
+
+  // Sheet 1: Players overview
+  let csv = BOM;
+  csv += 'ΣΤΟΙΧΕΙΑ ΠΑΙΚΤΩΝ — MY ACADEMY | STARGATE Football Management\n\n';
+  csv += 'Α/Α,Όνομα,Επώνυμο,Ηλικία,Ημ. Γέννησης,Κατηγορία,Θέση,Κυρίαρχο Πόδι,Ύψος (cm),Βάρος (kg),Σχολείο,Προηγ. Ομάδα,Ημ. Εγγραφής,Αρ. Μητρώου,Τηλ. Γονέα,Email Γονέα,Ομάδα Αίματος,Αλλεργίες,Φαρμακευτική Αγωγή,Τελ. Ιατρική Εξέτ.,Αξιολογήσεις,Τελ. Βαθμολογία Τεχνική,Τελ. Βαθμολογία Φυσική,Τελ. Βαθμολογία Τακτική,Τελ. Βαθμολογία Ψυχολογική,Τελ. Συνολική Βαθμολογία,Βαθμίδα,Σημειώσεις\n';
+
+  players.forEach((p, i) => {
+    const last = p.ratings && p.ratings.length ? p.ratings[p.ratings.length-1] : null;
+    const overall = last ? ((last.technical+last.physical+last.tactical+last.psychological)/4).toFixed(1) : '';
+    const grade = last ? getGrade(parseFloat(overall)).label : '';
+    const age = calcAge(p.dob);
+    const med = p.medical || {};
+    const joinDate = p.joindate ? new Date(p.joindate).toLocaleDateString('el-GR') : '';
+    const dob = p.dob ? new Date(p.dob).toLocaleDateString('el-GR') : '';
+
+    const row = [
+      i+1,
+      p.name||'', p.surname||'',
+      age, dob,
+      p.category||'', p.position||'', p.foot||'',
+      p.height||'', p.weight||'',
+      p.school||'', p.prevteam||'',
+      joinDate, p.regnum||'',
+      p.phone||'', p.email||'',
+      med.bloodtype||'', med.allergies||'', med.medications||'',
+      med.lastexam ? new Date(med.lastexam).toLocaleDateString('el-GR') : '',
+      (p.ratings||[]).length,
+      last ? last.technical : '',
+      last ? last.physical : '',
+      last ? last.tactical : '',
+      last ? last.psychological : '',
+      overall, grade,
+      (p.notes||'').replace(/,/g,';').replace(/\n/g,' ')
+    ];
+    csv += row.map(v => `"${v}"`).join(',') + '\n';
+  });
+
+  csv += '\n\n';
+
+  // Sheet 2 style: Detailed ratings history
+  csv += 'ΙΣΤΟΡΙΚΟ ΑΞΙΟΛΟΓΗΣΕΩΝ\n\n';
+  csv += 'Παίκτης,Κατηγορία,Ημερομηνία Αξιολόγησης,Τεχνική,Φυσική,Τακτική,Ψυχολογική,Συνολική,Σχόλια\n';
+
+  players.forEach(p => {
+    (p.ratings||[]).forEach(r => {
+      const avg = ((r.technical+r.physical+r.tactical+r.psychological)/4).toFixed(1);
+      const date = new Date(r.date).toLocaleDateString('el-GR');
+      const row = [
+        `${p.name} ${p.surname}`, p.category||'',
+        date, r.technical, r.physical, r.tactical, r.psychological, avg,
+        (r.notes||'').replace(/,/g,';').replace(/\n/g,' ')
+      ];
+      csv += row.map(v => `"${v}"`).join(',') + '\n';
+    });
+  });
+
+  csv += '\n\n';
+
+  // Sheet 3 style: Medical / injuries
+  csv += 'ΙΣΤΟΡΙΚΟ ΤΡΑΥΜΑΤΙΣΜΩΝ\n\n';
+  csv += 'Παίκτης,Κατηγορία,Τύπος Τραυματισμού,Ημερομηνία,Εκτιμ. Επιστροφή,Κατάσταση,Σημειώσεις\n';
+
+  players.forEach(p => {
+    ((p.medical||{}).injuries||[]).forEach(inj => {
+      const row = [
+        `${p.name} ${p.surname}`, p.category||'',
+        inj.type||'',
+        inj.date ? new Date(inj.date).toLocaleDateString('el-GR') : '',
+        inj.return ? new Date(inj.return).toLocaleDateString('el-GR') : '',
+        inj.status||'',
+        (inj.notes||'').replace(/,/g,';').replace(/\n/g,' ')
+      ];
+      csv += row.map(v => `"${v}"`).join(',') + '\n';
+    });
+  });
+
+  // Export as CSV (Excel opens CSV natively)
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const today = new Date().toLocaleDateString('el-GR').replace(/\//g,'-');
+  a.download = `MyAcademy_Export_${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── ACTIVATION SYSTEM ────────────────────────────────────
+const SHEETS_API_URL = 'YOUR_GOOGLE_SHEETS_WEB_APP_URL_HERE';
+const ADMIN_PASS = 'STAR-ADMN-2025';
+const FALLBACK_KEYS = ['STAR-DEMO-2025'];
+let isAdminMode = false;
+
+function formatLicenseKey(val) {
+  val = val.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (val.length > 4) val = val.slice(0,4) + '-' + val.slice(4);
+  if (val.length > 9) val = val.slice(0,9) + '-' + val.slice(9);
+  return val.slice(0,14);
+}
+
+function showMsg(elId, msg, isError, isOk) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.style.color = isOk ? '#00C853' : (isError ? 'var(--red)' : 'var(--accent)');
+  el.textContent = msg;
+}
+
+function activateApp(key, data) {
+  localStorage.setItem('myacademy_activated', 'true');
+  localStorage.setItem('myacademy_license', key);
+  if (data) localStorage.setItem('myacademy_license_data', JSON.stringify(data));
+  document.getElementById('activation-overlay').style.display = 'none';
+  if (isAdminMode) setTimeout(showAdminPanel, 300);
+}
+
+async function validateKey(key) {
+  if (!SHEETS_API_URL || SHEETS_API_URL === 'YOUR_GOOGLE_SHEETS_WEB_APP_URL_HERE') {
+    return FALLBACK_KEYS.includes(key)
+      ? { valid:true, owner:'Demo', status:'ΕΝΕΡΓΟΣ' }
+      : { valid:false };
+  }
+  try {
+    showMsg('activation-error', '⏳ Έλεγχος...', false, false);
+    const resp = await fetch(`${SHEETS_API_URL}?key=${encodeURIComponent(key)}&action=validate`);
+    if (!resp.ok) throw new Error();
+    return await resp.json();
+  } catch(e) {
+    return FALLBACK_KEYS.includes(key)
+      ? { valid:true, owner:'Offline', status:'ΕΝΕΡΓΟΣ' }
+      : { valid:false, error:'Σφάλμα σύνδεσης. Ελέγξτε το internet.' };
+  }
+}
+
+function checkActivation() {
+  if (localStorage.getItem('myacademy_activated') === 'true') {
+    document.getElementById('activation-overlay').style.display = 'none';
+    if (localStorage.getItem('myacademy_isadmin') === 'true') setTimeout(showAdminPanel, 500);
+    return true;
+  }
+  return false;
+}
+
+// ── Format user key input ──
+document.getElementById('activation-input').addEventListener('input', function() {
+  this.value = formatLicenseKey(this.value);
+  showMsg('activation-error', '', false, false);
+});
+
+document.getElementById('activation-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('activation-submit').click();
+});
+
+// ── User license submit ──
+document.getElementById('activation-submit').addEventListener('click', async function() {
+  const key = document.getElementById('activation-input').value.trim().toUpperCase();
+  if (!key) { showMsg('activation-error', 'Παρακαλώ εισάγετε κωδικό.', true); return; }
+  this.disabled = true;
+  const result = await validateKey(key);
+  this.disabled = false;
+  if (result.valid && result.status !== 'ΑΚΥΡΩΘΗΚΕ') {
+    showMsg('activation-error', '✅ Επιτυχής ενεργοποίηση!', false, true);
+    setTimeout(() => activateApp(key, result), 700);
+  } else if (result.status === 'ΑΚΥΡΩΘΗΚΕ') {
+    showMsg('activation-error', '❌ Ο κωδικός έχει ακυρωθεί.', true);
+  } else {
+    showMsg('activation-error', result.error || '❌ Μη έγκυρος κωδικός.', true);
+  }
+});
+
+// ── Show/hide admin section (NO POPUP) ──
+document.getElementById('show-admin-btn').addEventListener('click', function() {
+  document.getElementById('user-section').style.display = 'none';
+  document.getElementById('admin-section').style.display = 'block';
+  setTimeout(() => document.getElementById('admin-input').focus(), 100);
+});
+
+document.getElementById('hide-admin-btn').addEventListener('click', function() {
+  document.getElementById('admin-section').style.display = 'none';
+  document.getElementById('user-section').style.display = 'block';
+  showMsg('admin-error', '', false, false);
+});
+
+document.getElementById('admin-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('admin-submit').click();
+});
+
+// ── Admin submit ──
+document.getElementById('admin-submit').addEventListener('click', function() {
+  const pass = document.getElementById('admin-input').value.trim();
+  if (!pass) { showMsg('admin-error', 'Εισάγετε κωδικό Admin.', true); return; }
+  if (pass === ADMIN_PASS) {
+    isAdminMode = true;
+    localStorage.setItem('myacademy_activated', 'true');
+    localStorage.setItem('myacademy_license', 'ADMIN');
+    localStorage.setItem('myacademy_isadmin', 'true');
+    showMsg('admin-error', '✅ Καλώς ήρθες, Admin!', false, true);
+    setTimeout(() => {
+      document.getElementById('activation-overlay').style.display = 'none';
+      showAdminPanel();
+    }, 700);
+  } else {
+    showMsg('admin-error', '❌ Λάθος κωδικός Admin.', true);
+    document.getElementById('admin-input').value = '';
+    document.getElementById('admin-input').focus();
+  }
+});
+
+// ── Admin Panel ──
+function showAdminPanel() {
+  if (document.getElementById('admin-panel')) return;
+  const panel = document.createElement('div');
+  panel.id = 'admin-panel';
+  panel.style.cssText = 'position:fixed;top:64px;right:0;width:380px;height:calc(100vh - 64px);background:#0e0b09;border-left:2px solid #FF6D00;z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:.3s ease;box-shadow:-4px 0 20px rgba(0,0,0,.5);overflow-y:auto;';
+  panel.innerHTML = `
+    <div style="padding:1.25rem;border-bottom:1px solid #2a1f15;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0e0b09;z-index:1;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#FF6D00;">⚙️ ADMIN PANEL</div>
+        <div style="font-size:.65rem;color:#78655a;letter-spacing:2px;text-transform:uppercase;">Stargate Football Management</div>
+      </div>
+      <button id="admin-close" style="background:none;border:1px solid #2a1f15;color:#78655a;width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem;">✕</button>
+    </div>
+    <div style="padding:1rem;border-bottom:1px solid #2a1f15;">
+      <div style="font-size:.7rem;color:#78655a;text-transform:uppercase;letter-spacing:2px;margin-bottom:.75rem;">📊 Στατιστικά</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+        <div style="background:#1e1712;border:1px solid #2a1f15;border-radius:8px;padding:.75rem;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#FF6D00;line-height:1;">${players.length}</div>
+          <div style="font-size:.65rem;color:#78655a;">Παίκτες</div>
+        </div>
+        <div style="background:#1e1712;border:1px solid #2a1f15;border-radius:8px;padding:.75rem;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#FF6D00;line-height:1;">${players.reduce((a,p)=>a+(p.ratings||[]).length,0)}</div>
+          <div style="font-size:.65rem;color:#78655a;">Αξιολογήσεις</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:1rem;border-bottom:1px solid #2a1f15;">
+      <div style="font-size:.7rem;color:#78655a;text-transform:uppercase;letter-spacing:2px;margin-bottom:.75rem;">⚙️ Ενέργειες</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;">
+        <button onclick="exportToExcel()" style="background:#1e1712;border:1px solid #2a1f15;color:#f2ece8;padding:.55rem .75rem;border-radius:8px;font-size:.78rem;cursor:pointer;text-align:left;">📊 Εξαγωγή δεδομένων</button>
+        <button onclick="adminResetActivation()" style="background:#1e1712;border:1px solid rgba(255,68,68,.4);color:#FF4444;padding:.55rem .75rem;border-radius:8px;font-size:.78rem;cursor:pointer;text-align:left;">🔓 Reset ενεργοποίησης</button>
+        <button onclick="adminClearAllData()" style="background:#1e1712;border:1px solid rgba(255,68,68,.4);color:#FF4444;padding:.55rem .75rem;border-radius:8px;font-size:.78rem;cursor:pointer;text-align:left;">🗑 Διαγραφή ΟΛΩΝ</button>
+      </div>
+    </div>
+    <div style="padding:1rem;">
+      <div style="font-size:.7rem;color:#78655a;text-transform:uppercase;letter-spacing:2px;margin-bottom:.75rem;">👥 Παίκτες</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;">
+        ${players.map(p => {
+          const score = calcOverall(p.ratings);
+          return `<div style="background:#1e1712;border:1px solid #2a1f15;border-radius:8px;padding:.6rem .75rem;display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:.82rem;font-weight:600;">${p.name} ${p.surname}</div>
+            <div style="font-size:.68rem;color:#78655a;">${p.category} · ${p.regnum||'—'}</div></div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#FF6D00;">${score||'—'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  document.body.appendChild(panel);
+  setTimeout(() => { panel.style.transform = 'translateX(0)'; }, 10);
+  document.getElementById('admin-close').addEventListener('click', () => {
+    panel.style.transform = 'translateX(100%)';
+    setTimeout(() => panel.remove(), 300);
+  });
+  if (!document.getElementById('admin-toggle-btn')) {
+    const btn = document.createElement('button');
+    btn.id = 'admin-toggle-btn';
+    btn.textContent = '⚙️ Admin';
+    btn.style.cssText = 'background:#FF6D00;color:#000;border:none;padding:.35rem .75rem;border-radius:6px;font-size:.72rem;cursor:pointer;font-family:"DM Sans",sans-serif;font-weight:700;';
+    btn.addEventListener('click', toggleAdminPanel);
+    const headerRight = document.querySelector('.header > div:last-child');
+    if (headerRight) headerRight.prepend(btn);
+  }
+}
+
+function toggleAdminPanel() {
+  const p = document.getElementById('admin-panel');
+  if (p) { p.style.transform = 'translateX(100%)'; setTimeout(() => p.remove(), 300); }
+  else showAdminPanel();
+}
+
+function adminResetActivation() {
+  if (!confirm('Reset ενεργοποίησης;')) return;
+  localStorage.removeItem('myacademy_activated');
+  localStorage.removeItem('myacademy_license');
+  localStorage.removeItem('myacademy_isadmin');
+  location.reload();
+}
+
+function adminClearAllData() {
+  if (!confirm('⚠️ Διαγραφή ΟΛΩΝ; Δεν αναιρείται!')) return;
+  if (!confirm('ΣΙΓΟΥΡΟΣ;')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+checkActivation();
+
+// ─── MANUAL ───────────────────────────────────────────────
+document.getElementById('manual-btn').addEventListener('click', () => {
+  document.getElementById('manual-overlay').classList.remove('hidden');
+});
+document.getElementById('manual-close').addEventListener('click', () => {
+  document.getElementById('manual-overlay').classList.add('hidden');
+});
+document.getElementById('manual-overlay').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.add('hidden');
+});
+
+</script>
+
+<!-- ACTIVATION OVERLAY -->
+<div class="activation-overlay" id="activation-overlay">
+  <div class="activation-box">
+    <div class="activation-logo">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAFqAWUDASIAAhEBAxEB/8QAHQAAAQQDAQEAAAAAAAAAAAAAAAIEBQgBAwcGCf/EAFYQAAEDAwEFAwcFDAYIBgAHAAEAAgMEBREGBxIhMUFRYXEIExQigZGhMkJSYrEVFhcjVnKClLLB0dIkJzM3kqI0Q1NjdYXC8AklRGVz4UZUZHSz4vH/xAAbAQACAgMBAAAAAAAAAAAAAAAAAQIGAwUHBP/EADsRAAIBAQQFCQUIAwEBAAAAAAABAgMEBREhBhIxodETIkFRYXGBscEUFTKR8BY0NUJSU4LhIzPxomL/2gAMAwEAAhEDEQA/ALlIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAIQhAAhCEACEIQAISJpYoYnSzSMjjYMue9wAA7SSvBal2w6FshdGLmblO3gYqFnnOP53BvxWKrWp0ljOSR6LPZK9plq0YOT7EdAQq6ah8oO7zkssNkpaNnSSqeZX+O63AHvK8Hetpmu7uHNqtSVccbucdNiBvh6gB+K1tW+rPD4cWWGz6I26rnUwj3vF7sfMt7XXGgoGb9dXU1K3GczStYPiV5i47T9BUBLZtTUUjh82AmY/5AVT2eWWolMtTLJPIeb5XF7j7SsArwTv6b+CCW/gbmjoXRX+2q33JLiWlq9uehYciJ9yqf8A46QjP+IhR0237TTQfM2a8SHpvCJv/UVW4JYXllfVqezBeB74aJXfHam/HhgWDf5QNt3iI9N1rm9C6oYD8AVj8P8AR/kzUfrbf5VwBpS2lY3fFr/VuRmWi92/t73xO+/h+pPyZn/W2/yrP4fKX8mZ/wBbb/KuCNK2AqPvi2fq3LgP7L3Z+3vfE7x+Hul/Jmf9bb/Kj8PdN+TM/wCtt/lXCQs5S982z9W5cA+y92ft73xO6fh8p/yYm/XB/Ksfh8p/yYm/XB/KuFrKPfNs/XuXAf2Xuz9vfLidzG3yn/Jib9cH8qWNvNMf/wANTfrY/lXCMJYR75tn6ty4D+y12ft75cTuv4eKf8mpv1sfyo/DxT/k1N+tj+VcMBWQo++bZ+vcuAfZa7P298uJ3L8O9P8Ak1N+uD+VH4doPyal/XB/KuHBZR75tn69y4B9lrs/b3y4ncPw7Qfk1L+uD+VZ/DtT/k1N+uD+VcPCUEvfVs/XuXAf2Wuv9vfLidv/AA6wfk1L+tj+VH4dYPyal/Wx/KuJBCPfVt/XuXAf2Wuv9vfLidu/DpB+Tcv62P5Vj8OkH5NS/rY/lXExyQl76tv69y4B9lrr/b3y4nbfw6Qfk1N+tj+VA25wfk3N+tj+VcTAWcJe+7b+vcuA/srdf7e+XE7Z+HKH8m5f1sfyoXE0I99239e5cA+yt1/t75cS56EIV8ORAhCEACEIQAIQhAAhCEACEmR7I43SSPaxjQS5zjgADmSVxzaPtztdr87b9KMjulaMtNU/Po8Z7ush8MDvKwV7TToR1qjwPZYrBaLbPUoRx8l3s6ve7va7JQPrrvX09FTM5yTPDR4DtPcFxnW236li85S6SoDUv5CsqwWs8Ws+UfbjwXDtS6gvWpLga++XGatn+aXnDWDsa0cGjwUXjiq9ar5qTypZLeX27tEaFFKVpevLq6OL+sie1Rq7UeppjJfLtU1QzkRb27E3wYPVHuUHhAQOeFppzlN4yeLLZTpwpRUIJJLoWRkBKAWBw5kDxWxjXP8AkNLvzRlQJiMLITuO23GVpdFb6x7QcZbTvI+xYdbbk0+tba4eNM/+Ceq+ojykOsbhLCDFKwZfG9o7XNIQ0g8iD4KLJLMUEsBJalhRHgLaEtqS1LCiwFBCwshIZnCzhYCykwBKAWOayEhmcLICwFlIBQCEArKBgFkLCAkMWErCQClhIACzhCykMFkBAWQkBjCFlCQy5qEIXUjgAIQhAAhCEACEIQAKL1Rf7Vpqzy3W8VTaemj4DPFz3dGtHMuPYoraNre06Js3pte7ztTJkUtKx2HzO/c0dXdPHAVT9cawvesLsa+8VG9ukiGBnCKBp6NH2k8StZb7xhZlqxzl5d5Yrk0fq3i+UnzafX0vsXE9FtR2oXnWcz6SJz6CzA+pSMdxkHbIR8o/V5Dv5rn+6gc16zQugNTawmabXQmOjzh9ZPlkLfA83HublVaUq1qqdMpM6VGnZbts+CwhBfXi955PdUrp3Td+1DP5qy2mrrjnBdFH6jfFx9Ue0qx+jdiOlrQI57vv3qrGCfPDdhB7mDn+kSunUtPBSwNgpoI4ImDDY42hrWjuAW1s9yVJZ1Xh2Lb9fMrFu0yo0+bZoaz63kvlte4rhpzYDqGrDZL1cqO2MPOOPM0g92Gj3ldAsmwnRVFuurzX3R45+en3Gf4WY+0rqeVB6n1jpTTEZk1FqS02oAZxV1bI3EdwJyfYtvSuuzU/y49+ZV7TpJeNo21NVdUcv73je2aC0XbQBSaXtTCOrqZr3e92Sp2noqOmYGU9JBC0cgyMNA9y4tqPyqdjdokdFBfaq7SDpQ0b3Nz+c4NHuKntJ7cdEavawaYu9FWTuaCaWSXzU7e7zbgCfZle2FOEfhSRp6loq1HjOTfe8TqSF4mTWtWx5HoEPDoXkH7Fj7+pxztkZ8Jj/BZMDFie0lhhlYWSRMe08w5oIUHctFaRuQIrdN2qUn53ozWu94AKi4teR/6+2vH5koP2gJ3T66sr+EzamA/WjyPhlQlTjPKSxMlOtUpvGEmu54HnrvsU0PWtJpKertrzyNPOSP8AC/IXhdQbBbtTh0lju9NWtHHzVQ0xP9hGQfgu4UOoLLWuDaa5U7nHk0u3Xe44Kk14at12Wpthh3ZG3s2kV42fZUbXbn557ymuodLah07Ju3m01VI3OBIW70Z8HjI+KiQrvSxxyxujlY17HDDmuGQR4Ln+rdkWlL3vzUkDrRVu4+cpAAwnvjPD3YWntFwzWdGWPYyz2HTKnNqNqhq9qzXy2+ZWJC9prfZpqbS+/PJTen0DePpVKC4NH1m82/Ed68RvA8uS0NWjUpS1aiwZcrNaaNphylGSkuw2BKCQ1LCxGczhZCwOCykBkICwFlIQsLISQUockDDuQAsLIQMyEoFJQCkM2ApQWsFKCiMUlBIRlLADZwQkZQgZc9CELqJwAEIQgAQhCABee1/qy26O09Ldbg7ed8ingBw6eTHBo/eegUjqG8W+wWaqu90nEFJTML5HH4ADqSeAHUlU92i60uGtdRyXOs3oqdmWUlNnIhjzy73HmT29wC11425WaGEfiezib+4blleNXWnlTjt7exfWQy1bqC56nvk93u0/naiU8Gj5EbejGjo0f/Z4lNbFZbpfbnHbrRRS1lVJ8mOMch2k8gO88FP7N9DXjW918xQs8xRREek1j2+pEOwfSd2D34VqdDaPsmj7WKK0Uwa5wHnqh/GWY9rj+7kFobHYKlrlrzeEevrLte1+2e6oKjSSc0sl0Lv4HgNmmxK1WdkVw1QIrpcODhT86eI+B+WfHh3dV12ONkUbY42NYxow1rRgAdgCU5wa0ucQABkk9FX7bV5Sll0w6az6Mjp75dm5bJUl2aSnd4jjI4djSB39FaKFnp0I6tNYHNrbb7RbamvXli9y7kdyv96tGn7XLdL3cqS3UMIzJPUyiNjfaevcq3bTPLC0xajLR6Hs89+qG5aKypzBS57QPlvHsb4qrW0LV2qdc3Q3HVN6qrlMCfNsecRQjsjjHqsHgPEleQmp+5ZzxHQdf+ULtY1a6RlTqiotlI/P9FtY9GYB2bzfXPtcVyaqnmqJ3TzySTSvOXPkcXOJ7yeKfSQdy0mHHRADE5Pahjnxva9jnNc05aQcEHuKeGJa3R9yBHT9ne33XGljFS19V98FsZgej1ziZGt+pL8oe3I7lZzZxtX0brqiL7fcGUNbG3M1DWvbHKzvac4e3vHtAVN9nWgtQ6/1CyzaeojNJwdPO/hDTM+nI7oO7meQBV2dk2xfSOz617kVHFdrrMzdqq+rhDnO7WsachjM9OZ6kpoZPx1lDP8A2NbSS/mTtd9hS3Q7wyBkdo4p5UaT07MMSWK3fo07W/YExdoaxAl1NHVUTuhpql7MezOEwNclMDzGVvobhdrY4GhuFRCB8ze3mf4TwWl2mrtTcaDUU8gHKOtibKP8QwVolbqGlH9Ks8NYwc30Mvrf4H4PuKAPZ2naFUxER3aibK3kZYODva08D7CvbWe8227xb9BVMlIHrM5Pb4g8VwuK50NTN5hsjoajrBOwxyD2Hn7E5iFRFM2WmdLHKw5a+MkOb7QlgB3ojPNc42g7JLDqNslZbWMtNzPHzkTfxUp+uwfaMHxTOzbSX2t7afUdRTOhHDzzpWRyN8QSA74HxXRbDeLVfrZHc7NcKavo5c7k0Ege0kcxkdR2LBXs9OvHVqLFHqsltr2OpylGTi/rb1lRtU6ZvGl7iaG8UjoJDxjeOMco7Wu6/aOoUTlXM1HY7XqG1yW67UjKmB/IHg5h+k08we8KtW1DZzc9HTmrh362zPdhlSB60RPJsgHLudyPceCqV4XTOzYzp5x3o6VcmklK34Uq3Nqbn3dvZ8jxAcsgrWEoFactAtZCSFnKQhQSwVrBSgUgYpZCSEoIGZQhCQwCW0pOEockhikLCMpDMoWMoQBdFCELqBwEEIQgAQheC246yOj9GSyUsgbc64mno+PFpI9aT9EcfEhY6tSNKDnLYjPZrPO01o0aazk8DkXlIa0N8vg05b5t63W5/wCOLTwlnHA+Iby8c9y8tsn2eXDXF4Iy+ltNO4elVWP8jO15+A4noDq2XaOrdcajbQxOfHSRYkranGfNszyBPN7untPRW5sNot9itMFrtdMynpYG7rGN+JJ6k8yeqr1ls07fVder8Pn2dxfbyvKnclmjYrL8eG3q7X2vo/4Y0/Z7dYbTBa7VSx01JA3DGNHvJPUnqTzW263GktlI6prJfNxjlgZc49gA4krTf7vSWagdVVTsk8I4x8p7uwLmFTday63ZtbWP+S71Ix8lgzyH8eqssYpLBHPJzlOTlJ4tnBNvO3W8a1lqLHYHzWzTwcWOAO7NWAdXkcm/UHtzyXC5WjGML1+1G1fcTaJf7Xu7rYa6QsH1XHeb8HBeVkagiMJWJrLGD0UhI1NpAgZGyxJu+NSMjU3kagQxdH3L3exjZRfdpl9NPRA0dqpnD064PblkQPzWj50hHJvtOAnmxXZfdtpWo/RaffpbTTOBr67dyIwfmN6GQjkOnM8FfDSOm7PpawUtisVEyjoaZuGMbzJ6ucebnE8STzTQEZoPRdg0Rp2GxadoW01NH60jzxknfjjJI75zj7hyGAp4w9yeiNHm+5MBgYVgw9yfmNBiQIjHQ9y1uiUo6LuWp0PcgDz92tNBc4vNV9HDUs6b7ckeB5j2KtPlR6P1ZZQ3UNn1BeZdOP3YqijFXJu0buQPA8WO7TnB8QrXyQ9yjrrbqW40FRb6+nZUUtTG6KaJ4y17HDBBQM+ak0W+4ulzI7tfxPxXsNku1HV2y2+C4abrT6LI4Grt0xJp6kD6Tejux4wR3jITrbBoeo0Hrersj999G78fQTO/1kDjwyfpNOWnvHevETxcOSiM+l+w/bBpXavY3VVmmNLcqdo9Otk7h56nJ6/XYTyeOHbg8F0GqggqqeSmqYY5oZWlkkb2hzXNPMEHmF8ldLahvujtSUmotOXCW33KkdvRSxnmOrXDk5p5Fp4EL6GeTVtzs+1qymkqGxW7VFHGHVtCHerI3l56LPEsJ5jm0nBzwJATweKPJbYdmL9NuferJG+WzuOZI85dSk/azsPTke1cuyrvTxRTwSQTxskikaWvY8Za4EYII6hVg2z6Bk0hdRW0Eb32WrfiJ3PzD+fmyez6J6jhzHGp3tdnI/5qS5vSur+jpGjekDtOFltD5/Q+vsfb59+3wQKyCtbSlhaEuQtZBSVkKLGbAlBawUoFIQtCSClJDMrIKTlAKBi8oyk5QokjJQsIQBdRCELqBwEEIQgDBVSdrN6rdoW1H0C0h1TFHL6Db42ng7B9Z/gXZOfogdisBtu1KdMbPa+qhk3Kupb6LTceIe8EF3sbvH2LwnkwaIbSW46yuEP9IqmmOgDhxZFyc/xdjA7h3rUW/WtFWNmjs2vu+vQtdxuF32WpeNRZ/DBdb6frqxOnbONJUOjdL09opA18uN+pnxxmlI4uPd0A6ABTV0rqa20MtbVyBkUYyT1PYB2kpzyGSuSa81Ab1c/RqZ+aGmcQzHKR3Iu/cP8A7W1pwjCKjHYisVq061R1JvFvNjC93WqvdydWVBIbyijzwjb2fxKKdpAym9NHyU1ZbdLcKxlNHwB4vd0a3qVMxFcfKxt7KLahDWNaGi4Wumnce1wBYT/lC55Y9H6pv5H3H0/cqxp+eyAhn+I4b8VdXVFFZLtfqerdbKOodQRej0s8sLXva0HjgnplOoGkgA8hyHYjAMSq9o8nzXVfGySsfa7Y13Ns1QXvaPBgI+K9Rb/JgDyDctZkDq2loP3vd+5WMiZlOYo8owA4JT+S9pHA8/qK/wAp67ohZn/KVmp8lnRskJFPftQMkxwLnwuB/wAgVgWRLeyJAHmNnWn7LpnTNPY7DSNpaSlyC3m97z8p7z85xPM/wXqI2KPqozb7mysH+jzndm7j2/8AfeppsfBAjUGLPm04DEoMQA1MawY+CdliSWIAaGNIdGnhYkliAGD4U2lh7lKOYtL40wONeUrs++/LQMlRQwh93tAdVUmB60jQPxkX6TRkfWaO1UikYHNyORX07dHg5HRUT8o/RH3lbS6uKmh83a7nmtocDg0OPrxj81+R4FqTGchqYs54LGnL5eNKajotQWCuloblRSiSCaM8QeoI5EEZBB4EEgp7UMUbUxc0gPpb5OO1617W9FivYI6W+UQbHdKJp/s3kcHszxMbsEjswR0yeh361UN7tFTarjCJqWpYWPaftHYQeIPQhfK/Y9tAvOy/X1Fqe0OL2xnzdZTF2G1UBI34z7sg9HAHovqNozUlp1fpa36ksVSKm3V8IlheOeDzaR0cDkEdCCEmlJYMnCUoSUovBoqlrnTVZpPUlRZ6vLwz14JcYEsZ+S79xHQgqECtLtn0aNV6ZdJSRA3ShDpaUgcZB86P244d4Cq4QRwIII5gjiFRrysTslbBfC9n12HXbivVXjZlKXxxylx8eIArISEtq1xuhQWcpKykMUClApAKUCkMUhYysoHiZWQUlY3uKQxeM8kL3ezHZ3PrK31dc+rdR08Mgijdu5847GXe71fehe+lddprQU4Ryfcaa06QWCzVXSqTwktuTLMoQhX842CELBIAyTgIA4ptjoZtc7U7DomF7hSUsRqq9zfmNcePt3QAO967PSU8NJSxUtNG2KGFgjjY0YDWgYAHsXg9klD6bWXzW1Q3M95q3tpyebaaNxawDxxn2Be/e5rGF7iGtaMknoF4rHDHWrPbJ7ujibe9azjqWRbKaw/k85b8vA8ptMvJt9oFDTv3amrBbkHi2P5x9vL3rmFNFy4J7qK6OvV9qK3J80XbsI7GDl7+ftRSx8l7jTm+mj5cMr1NR/5RaW0EZxWVTd6ocObGdGplpynijdLcqluYaUb2D85/QLSZZaqofUTHMkjt5x/cgDMEXJP4I0iBiews5JgLijTqNixCxOY2IEYYxb2MSmMW1jEsQNNRTMqad8EnyXjGezvTaxSv3X0NR/bQcB3tUo1qjbzG+nmiucIy6M4kH0m/98EhklurO6lQvZNEyWM5Y8AgpeEAat3uWC1bsLGEAaCxJMacbqN3ggBo6NaXsT5zVqe1MBg9i4n5YmmI7xsqdemMHpVinFQ13UwvwyRvxa79FdvrZYqWB887wyNgyT/31UNDFJcpBV1sQFP/AKmneMjH0nA80AfNGQhw4EEdyZztyr47SNg2g9XOlq4aI2O5P4+k29oY1x7XxfJd7MHvVXtq2xTWWhGy1stMLtZ28fT6NpIYP94z5TPHiO9AHHKuPmrKeQdtafp7Vh2dXqpxabzLvW9z3cIKs/NHY2QDH5wb2lVzqGgjITCOWejrYqqmlfDPE8SRyMOHMcDkEHoQQkM+xqrX5QWl2WLVbbrSR7lFdd6QgDgyYfLHtyHeO8u5bM7tX3zQFjul2bG25T0ML6xrOTZiwF47uPRNdrem/vn0PW0UTA6rhHpFIevnGcQPaMt9q1952X2mztLas0bq4Lw9htkZN815PufT4PMqaFkFIDsgHBHcVkFUU6+LyshawUoJDFrIKShLAMRYKUFrBSmlIBRS6SnmrK2Ckp2F808jY42jq5xwPiVrK6Z5PGnhdNXSXmdm9T2xmWZHAzO4N9wyfcs9ls7tFaNNdJ5bfbI2KzTry/Kt/RvO76SslNp3TtHZ6QepTx4c7q9x4ucfEklClULokIqEVGOxHEqlSVSbnN4t5sEIQpEAUTrCaaDTVcab/SJIjDD/API/1G/FwUsmNziE81HCeLfPiVw/MBI/zbqhUWMWkZaLSqJvYs/kKs1vgtVppLbSt3YaWFsTB3NGFB7TbkaDS8scbt2WrcIG4PHB+UfcD716hcs2t13pF/pre0+rTRbzh9Z//wBAe9SiklgjHKTk3KTzZ5WkZyUtStPAAZJ5BMKVvJek0pTsmukb5f7GAGaQnlhqkIeXwCkpaW0MPrNAmnx1ceQTelZyWmWZ1bXTVb+cry4dw6D3YT+mj5IEOYGJ7CxaoGck9ibwTAVExOY2YSY2rfGEhCmNW1oQ0JYCQwAQ+Nksbo3jLXDBHclALOQ1pKBkVYzJTzS2+XPqEuYe5S3BUx8qfavdK3XjLHpa81lDS2QuZNPR1DozNUn5frNIJazG6Omd5c8tO3HaxaHNNPra4ztb8ysDKhp8d9pPxQB9EgFndVH7L5We0WhLRdLXYLqwH1j5l8DyPFriPgvfWTyydNvLW37Rt2ouHrPpKiOcD2O3SgC0JasELjenvKf2NXd8cb9TS2yR/wA2vo5IgPFwBaPeul6d1fpTUjd7T+pbPdRjOKSsjkI8QDlAEuQm9VJFTwummeGRtGSSt1ZNHS07p5zusaOJwoWGOa8Stq6phjo2nMMR+f3lAhoyGa7VDayraWUjDmCA/O+s5PpAnr28MJvI1MBjKMJlUciDxBGCO0dikZm8ExnamBXTbX5PdrvzZ7zopkFruxJe+iJ3aapPXd/2Tj3eqewc1VuyaXuL9ptr0pdqCekq33GKCpgmYWuYN8b3Ds3cnPIhfR6objK8brDT1lrrjQ6iq7dDLc7TvPpqkNxIxpaQ5ueowSQDyPJID2Gy+7ebvE9re7EVQ0vib2Ob0H6P2LpS4Bbq51DcqW4QuyYZGyDHUdfeF3yCVk0LJozlj2hzT2gjIQMqbtgsQ0/tCuVLEzcp6h/pUAxgbsnEgeDt4exeRyu7eVNaQ6gtF+YzjFK6lld9Vw3m/Fp964MCqHeNDkbRKK2bfmdiuO1+12GnUe3DB96y/s2gpbVpa5bGleHA2xsQsAoyojRkJQScoBSGbACTgAknkBzKtdsr02NMaNpKGRgbVyjz9UevnHcx7BgexcK2Hae+7+uIZZo96kt4FTNkcC4H1G+13HwaVZ9We4LLgnXfcvUoGmV4YyjZIvZm/RevyBCEKylEBCEIAEgtzMH9jSB7f/8AEtYQGJlcL1BVG4amuNUTvNdUOa0/Vad0fALttfN6PRTz/wCzjc/3DK4LTgk5xlzjnxJTQiRoo3ySMijYXPcQGtA4kqYuWotM6Zr6bRVXdYfvnvUTnR0jDlzGNaXetj5IIBxnn0XPNsW06h2S2T0Sh8xV61rYd6CF43mW+Nw4SyD6R6N6+HOmbdU3yDW0OsZa+ervMVY2sdUTPLnyyA59Y9hHDHLHBAH0WpY8AYUpTN5KC0deKLUmm7df7a4OpLhTsni+qHDi094OQe8L0cDcYTAcwt5J3EFohCdRhIRujC3sC1MC3sCQxbQlhJaEtAzIXOvKE103QezqsrqeVrbpWZpbc3r51w4v8GNy7xAHVdEc5rGFz3BrQMkk4ACof5ROvXa+15NUUspdZ7fvU1vb0c0H1pfF5GfANQBymcOc4uc5znOJJc45JJ5kntTKYKRmamUzUgGEoTKobkKRkamkzeCYEHVsIOQm8b3xvD43OY4cQ5pwR7VI1jOfBRrxhxCBHZPJl17qSm2y6Ttdx1Hdaiz1NwZTS0c1ZI+B3nAWNywnHBxB9i+kpbgYwBjhhfIfStxdZ9T2q7MJa6irIakEdCx4d+5fXpj2SxNljcHMeA5pHUHiEAN5GptI1PJAm8gQAxmamFQFJzBMKgc0xEVUjmoqsYCCCMg8wpioCjaoc0xnh6KExxyUrjk08jov0ebf8pC7Xs9qzV6SonOOXRNMTv0TgfDC5BXs8zfZQPk1EDX/AKTTg/Aj3LpGyGfetFZTk/2c+8P0mj+CTAXtutouezC9Rhu8+CEVLO4xkO+wFVKachXdvVM2ts9ZRvGWT08kbh2hzSP3qkDQWtDTzAwVVr+p4VIT615f9OiaGVm6FSl1NP5r+hYPFbWlaRzSw5V8upuBWQVqDktpSwAXlGQk5Xsdjemvvo1xTQTR71FR4qarsIB9Vn6TsewFSpUpVZqEdrMNptELNRlWnsisTu2xTTH3t6LhdPHu11fipqM8xkeoz2N+JK9ysLyO0LUItlw09ZoX/wBIulyiY4A8RE1wLj7Tuj2lX5KFkoJdCy+u9nHJOteVqcn8Um367kevQsIXpPAZQhCABCFhAEbqp5j01cXg4xTP+xV32ha4otmun47pIyKqvlUw/cqifyB5GeQfQb0Hzjw7V37aBUuotDXyubTtqHU1BNOIXOwJNxhdukjkDjC+a2uNTXTV2oaq/wB4mElVUkHdaMMiYPkxsHRrRwA/igCE1Jc6+9Xaru11q5auuq5TLPPIcue48z/9dBwXnqo81JVJ5qLqjzQItB5DWvmyCt2dXGcbzS6ttW8eY5zRD9sD89Wxiavlfpm93HTepKG/WicwV1BO2eB46Oac4PaDyI6glfSrZRra17QdE0Gp7XhgqG7tRBnJp5m434z4HiD1BB6poD2MQTuIJtEnUXJMRvYFuYFrjW1iiMW0JQWAFrq6iKlp3zzPayNjS5znHAAA5nuQM5N5VGtHaa2futFDUebuV6zTs3T6zIMfjX93Aho/O7lS2RgHADA6L322HWEuuNc1t433GjafMULT82FpOD+kcuPivETM6oAjJmc0ymYpOdqZyt7kgI2ViZzNUlM1MpmpgRVUzIKialmHZU7UN4KKq2c0CYyYMnHavrHseupvmyfSd3c4OfVWelkkIPz/ADTQ74gr5QwNy/wX0m8jK4iv8nXTbSSX0hqKV36E78fAhAI668JvIE5em8qBjSZMKgJ/KmVQmhEZUBR1SMBSlQo2q5FMR5O/tcK+jlBAAL2OHbluR8QvY7Hpv6dcoM844348CR+9eO1McejkcxO37CvTbGyTfa4f/pR+0kxnUlSLUUPomornSjOIayaMZGOUjgrvKl+0rhtF1GBy+6c/7ZVfv6OMIPtZdtC5YVqsexef9kIClZWkFbAVWDoYsFLa5agVkFRY8Bw3LiAASTyA5lWp2MaRGlNIxtqYw25VuJ6s9WnHqs/RHxJXIPJ60l93tSOvVZFvUFscHAOHCSfm0fo/KP6KssrLcdiwXLy7lxOf6XXprSVjg9mcvRevyMPc1jHPe4Na0ZJJwAO1VtqtSu1TtvtVwY8upY7jDBSDsia/gfacu9q6L5QerPuLpoWSkl3a65gtdg8Y4PnH2/JHiexcS2alp2g6e4gD7oRfao3vbNavChF7Gm/Qno1djhY6ttms3GSj3YZvx2eDLdjkhAQrKUMyhCEACZUU2/cK6LP9m9nxYCnq85ZKoP1xqKiz60cdJJjucxw/6VjnLBxXW/RmelDWjN9Sx3pepIaqpfTdM3SiyB6RRzRZPL1mOH718sZBuxhp5tGD7OC+r0rQ+NzHDIcMH2r5V36mNFeK+icCDT1UsRBHLde4fuWQwELUqMqhzUnUKNquRQJkeflFdj8lXaodnetxQ3WoLdN3dzYq3ePq08nJk4HdnDu1pPYFxw80BAH1rgcHNa5jmua4AhzTkEHkQeoTpkjGDL3tb4nC5rsB01drHsd01bL5cqqesbRtkc154wNf6zYc88MaQO7lyXvorZRDi6N0h7XvJTEPHXGhj+VVR57Acn4JBvdPyhp6qc/UiOPitsEEMf8AZwxt8GhOWlAxl90LpKB6Nad3PJ00uPgF5banZ9ZX/Ql2ttskoWVdRAWMY15G8PnMB6Fwy0E9q921KSA+c88MsE8kE8L4Zonlkkb27rmOBwWkdCDwwtEjOCtv5QWyBmqYpdTacgay+xszUQN4CtaB/wDyAcj87keiqfPG6N745GOY9ji1zXDBaRwII6FAyLmYmcrFJTBM5mpARszExmapSZqYTtTAjJ281HVLM5UvO1MJ2IAj4IuPJXv/APD9uBm2TXa2u50V5eQc/Nkijd9oKo7FHjord/8Ah51JH36UOPV/ocw49fxrf3BAi2L03kTh5TeRADaVMajqn0x4cExn6poCPqOqj6nkVIVCjqkpiPLaldDGIBNIxnnJmsj3jjeec4A7+BXptjjP/N7i/sgYPe4/wVQfKr2oVM2uqGxadq9yLT9Q2eWVh4PrB07wwcPEuVrvJe1BRaw0c/VFGWD0pkcc8QOTDM3O+w+B4jtBB6pDOvqlm0WQSbQdQvznNyn44xn1yFdJxDWlxOAOJVFr3Wen3y4V2eFRVSyjwc8kfatBfr5kF3l20Mi+Vqy7F5/0aQUppWppWwFVhnQkLT2yW2ru92prZQRGWpqZBHG3vPU9w5nuCYtViPJx0T9z7d99lyhxVVbC2ja4cY4Tzf4u+zxXqsVldqqqC2dPca29ryjd9mdV7diXW/radK0Rp6k0tpmks1GARC3MkmOMkh4ucfE/DClK+rp6GimrKuVsUEDDJI9x4NaBklb1wvyj9abz2aOt0vLdluDmn2si+xx/RVvtVop2KhrdWSXkcuu+xVr2tihjnJ4yfUul/XSeF1tcvv01RUXSORzJJCGQQyHgIxwaAe3qR2k4TXQVI+DaHp6N4w77ow59+V56F7mEOa4tIwQQeRXptnDjJtI08SSQa5jvDmftyqPSq8rXjKW1teZ1qvQ9nsc6cPhUXh4JlsghAQuiHETKEIQALmdFc/RPKMuFsccMr7HE5o7XxuJHwLl0xV72oXYWLyjbPdXO3Y4oadsp/wB28va74FeC8KvJRhPqkjdXJZ/aalWktrhL55Nbywa+cflN2X7hbctU0gAEc9WKyPA4bszQ/wC0uHsX0cHLgqd+X7poU+odP6thiw2sgfQ1DgPnxnfZnvLXPH6K95pSqk4UdUjmpSdqjqlvNAiKd8or3/k86QGttr1isk0e/Rif0ms4cPMxeu4HxwG/pLwc4w7KtT/4f+ns1epNWSs+QyO3QHHVx85J8Az3oEXBjI7AO4dFvYU0jcnLCmA4YVuYm7CtzCkM3NK2N5LS0rY0oAWuCeUjsiN4jn1jpelzcmN37hRxt/0poH9owf7QDmPnDvHHvQOVkFAz5tSYIyE1lHBWf8pHY0ZDVa00lS5ccy3Kgib8rqZowOvVzRz5jjnNY5MEcOSAI+YJjM1SczUxqABkngkBGztTGUetx5LqmzfY5rraC9ktntZprcTh1xrcxQAfVOMv/RB8QrP7LvJm0LpOSK430O1RdGYcHVcYFNG76sPEHxeXexMCrOyTYfrnaKI6u30It1nJ43KuBZE4f7sfKkPhw71cnY3sftOyu1VIsVdPW3WsawVtTVcGThucNawcGAZOOZ48SV0xoaxjWMaGsaAGtAwAOwJLnIAaUlwZUPMEsbqepb8qJ/PxB6jvC2SLXXU0FWwNmbxHFrmnDmntB6KPfUVdv4Ve9VU3SdrfXZ+cOo7wmIdTFM5luMsc0Ylie17HcQ5pyCm0pTEM6nquReUXtFi0BpFzKKVv3euLXR0DOZiHJ0xHY3p2ux2Fe72l6wtGh9MT327yeoz1YIGn16iQjhG3vPU9BkqgW0PU911hqWrv95m36modwYD6kLB8mNg6NA/eeZSA8dXufJM6SR7nvc4uc5xyXE8SSe1fQvyCtO/cXYLTXF7N2W9V09Yc89wERN+EZPtXz2bBNWVsVJTRuknmkbHGxvNznHAA9pX1r2e6eh0poax6apwNy20MNNkfOLWgOPtOT7UiRs1zXi2aNvNeXbpgoZntP1tw4+OFSFjd1jR2DCtT5S12Fv2bS0bXgS3GoZTgdd0Hfd8G49qquqvfdTGqodS8zo+h1n1LLOq/zPy/6xQS2uWrOFJ6Vslw1LqCkstsj36modjJHqxtHynu7gOPw6rSqLk8FtLdOcacXOTwSPZbE9EP1jqTzlXGfuRQkPqnHlI7m2IePM93iFbBjWsY1jGhrWjDQBgAdiiNGadt+ldO01ltzMRQty95HrSvPynu7yf4KUqZ4aankqKiRkUMTS+R7jgNaBkknsVzsFjVkpYPa9v12HJL7vWV5WnWXwrKK9e9nntpOqYdJ6YnuB3XVT/xdJEfnyEcPYOZ8FU+qfNV1c1XVSumqJnmSWRxyXuJySfavZbU9XO1fffS4d5tBT70VMw/Rz8sjtdz8AAvH4VTve3e1VcIvmrZxOi6NXR7vs2tNf5JbezqXHtNYbhep2TxGXaTYG8PVqt7j3NcV5kr2GxWPzm1GzDGd10jvdE9eGxrG0U12rzNtej1bFWf/wAy8mWkCEIXSThRlCEIAFVzynB/WaOOM2+H9p6tGqueU9/ea3/h0P7T1qL7+7eKLRoj+Ifxfod52T34aj0Bark54dP5kQ1HaJGeq7PjjPtXl/Km0qdWbFb1TwwmWst7BcKUAcd+Li4DxZvj2rxfktalFPdK3S1RJhlWPSaUE/6xow9o8W4P6JVhXNa5pa4AtIwQeRC9V32jl7PGXTsfejW35YXYrbOnhk813Phs8D5NTNBGRxHRR1SxXF22bDrJXXmqbaWx2e4EmSF7GfiJ2nkHtHI9N5vZxBVX9c6N1JpGq8zfrXNTMccRzgb0Mv5rxwPhz7l7TUHiKqPKvx5I9lZZdhljJZuzXAy10pxxO+8hp/wNaqIyxl53GjLncAO88l9KtHUDLNpa0WmMANoqGCnAH1Y2g/HKaA9PE5OI3KPhkTqN6Yh6wrcwplG9b2OSAdtKW0pu1yW1yQxw0pYKbtelB6AN4KrB5RuxOoiqp9XaKoTNBKTJX22BvrRuPOWJo5tPMtHI8Rw4CzYco7UUzmW1zGH15XBg9qBlK9AbEdeazkZK22us9tPyqy4NMYI+oz5T/cB3qx2znyfNBaTdFWV1KdQ3NmD5+vaDEw9rIvkjxO8e9dZjO5Gxn0WhvuCyXIAU0BrQ1oDWtGAAMABJJSS5JLkAZcVqcUOctT3IEYe5a3PwkyPWl70xEfV290crqm2SinlJy+I/2UniOh7wvN611zY9H2V9y1JM6icMtjpwN6Sd4HyYx87x5DqvWySY6qsflv17T96tAD639JnPh6jR+9MZxTa3r276+1E+6XJ5ip48so6Rrssp4+wdrj1d1PdgLnNa/GVI1UnAqCr5hnAKiB1zyNdFu1jt3tc00O/QWTNzqSRwzGR5oeJkLDjsBX0pVefIR0AdK7JvvjrYSy5ake2pO8MFtM3IhHty5/g8Lv1yrKe32+or6uQR09PE6WVx6NaMk+4JN4LFkopt4Irn5VF79L1ZQ2SN+Y7fT+ckHZJJ/wD1DfeuOZUlqq8z3/UVfeagESVk7pcfRBPqt9gwPYotoc97WMa5z3EBrWjJJPIAdqotqr8vWlPrO03ZY/Y7JTo9Sz79r3jijpaitq4qOkhknqJniOKKMZc9x5ABWx2MbPKfRFlM1SGS3qraDVSjiGDmI2nsHU9Tx7FD7CdmQ0xSMv18ha69Ts/Fxnj6Iw9Pzz1PTl256wrBdV3ckuVqLndC6v7KLpLf3tLdmoPmLa+t8FvBcJ2+649MmfpO1TfiInD0+Rp+W4covAcz34HQr2m1/XlLpuhNppZ3i6VUZw6IAmnYeG+e/sHt6ca7+ieecXU1Qyoyc4LsPz3g8/Zlea+7e8HZ6W3p4cT1aKXMnJW20LJfD39fh0duZohGA5pPAj4rMjHRvLHjdc3gQU/t1HuSunuDHQ00I3n7zcF3Y0duVunrrLXOL54amGQ83twc+xVdU245vB9pf5V8Jc1NrsIVxXvNgEJl2m0r8/2VNM8/4Q3/AKl5KWgp5ONHXwyfVk9R3x4LoHk305+/ytc4jMVvdyOecjB+5eu7qT9rpp9aNffVePu2s1+l78iwyEIXQTiwIQhAAqt+U7/eaP8Ah0P7T1aRVd8pwf1mD/h8P7T1qL7+7eKLRoj+Ifxfoc70/daqyXuiu9EcVFHM2VnHgcHiD3EZB8VdXTd3o79YqO8UD9+nq4hIztGebT3g5B7wqPFrhzBHsXa/Jl1iKOvk0hXS4gqnGahLj8mXHrM/SAyO8HtWqua1qlV5OWyXmWXSu7farOq8PihvXT8tvzOwbQrIbpaxVU7N6rpMvaBzez5zf3jvHeucbtNWUb6WrghqaeUYkilYHseO9p4FduXMtdWU2q4+m07MUdS7OAOEb+o8DzHtVtRzE5Bd9hGzu53aG409FVWp7Jmyuio5sQv3SDjccDug46YXYY5FDU8vLin0T8jmmBKwy96dxSZ6qIjkTuKVAiVjf3rex/eo2KROmSIAfNelhyZskW1r0gHQcltemoelB6AHYco2vPn73RU3NsYMzv3Jy2RR9rk8/dq6qPFrcQsPhzQMm99G8tG+sb6QYm8uSC5at9IdIgDa9+FokkSHyJvJImAt71ofItb5E3klTELllVOPLBu7a7aoyhY/ebbrfFE4dA95dIfg5qtxPOxoLnuDWji4noOpXz82nX86j11e75vbzKuskfH3Rg7rP8oCTGeUrZcA8V63yeNm9TtT2pUNjLHi1wEVV0mbw3KdpGWg/SccNHjnoV4WoMtRUMp4I3ySyODGMYMuc4nAAHUlfSTyVNlMey7ZvDDWws++C6btTdJOZa7HqQg9jAcfnFx6pAdZpKeGkpYqWmiZDBCwRxxsGGsaBgADoAAuPeVBqwW/T0OlqWXFTcvxlQAeLYGnl+k4Y8A5dZvl0o7LaKq63CYQ0tLGZJXnoB2d55AdpVLtX3y4aw1dVXaaOR9RWShsEDAXFreTI2gc8DHLmcrU3vauSpcnHbLyLVordntNp5ea5kM/Ho+W0hQC4gAEknAAGST2KxuwfZSbQYdUampx90iN6jpXjPowPz3D/ad3zfHk62J7JY7AIdQakiZNdyN6CnPrMpO89snfyHTtXYV5rtuvVwq1ln0Lie7SHSTlcbNZXzemXX2Ls630920Xktpus6TR9kMx3JrjOC2kpyflO+k76o6+7qtu0XWdv0daDUVGJq2UEUtMHYMju09jR1P71WLUN5uN/u010uk5mqJT4NY3o1o6NHYsl7XorNF06fxvceLRzR6Vvmq1ZYU1/wCuzu634dzW5VtXcq+avrp3T1M7y+SR3NxP2eHRaQAgBLAVIk3J4s6xFKKUUskO6Zz6ijmoS5xP9rECerRxA8Rn2gJkGgDgtsMj4JmTRnD43BzfELbco42VJfCMQygSxjsB6ew5HsUnzo9xjjzZ4dD8/r1GhXXvJjp83i9VP0KeKMfpOcf+kLkJK7t5MdLu2O8Vv+1qmRf4WZ/61srkhrW2HZj5Gj0qnqXXU7cFvR19CEK/HHQQhCABVd8po/1nf8vh+16tEqu+U3w2nD/h8P7T1qL6+7eKLRoj+Ifxfoc0bNI3k7PceK30lwmpaqKphAZNC8Pje3gWuByCPamiMZVS1mjprpwe1Fv9kut6XWunG1GWx3GmxHWwD5rujx9V3Me0dF6q4UdPX0UtJVMD4pW4cP3jvVNNBaouGj9SwXmgJcG+pUQk4bPETxae/qD0IHerg6avVv1DZae7WucTU07cg9Wnq1w6EciFcLst6tMNWXxLf2nLdIrmd31temv8ctnY+rh2dxy+822pslydSVGXNPGKTHCRvb49oRDLy4rqV+tNLeaB1LVNx1jkHyo3doXKbrQ1llrzR1rcHnG8fJkb2j+HRbUrY/ikynUT+IURBNnHFPYpM9UxEnFJ3p1HIoqOROY5UASjJFta9RrJe9bmy96AH4kWRJ3pmJO9K853oAcVFQIaeSYnG4wuWmwtMdsiLvlSfjHeJUZqCWR9HHSxZ3qmVsfs5lTDSI2NY3k0AD2IAdb6xvpt5zvWDKgBwX961ukWh0vetL5e9IDfJIm8ki0vm702kn70wN8kvemss3etE1R3plNUgHiQEAeJ8obVQ0xswuU0Uu5WVzfQaXB470gIcR4M3j7lR2qkGMDlhd6290e0HaBqdrbVpW6uslt3oqPejDfPOJ9eXBI54AHcB2qW8m/ybLxftQNvu0W1TW+yUbg+OhmID65/MA4JxEOv0uXLKQ8Cb8iXYa6Wem2paspMMb69jpJW8z/+ZcD/AJP8X0SrkpMMccMTIomNjjY0Na1owGgcgB0Ch9XRXust/wBzbFKyknqctkrn8RTM6uaPnP7ByHMnhgwnLVWOGJlpQ15qOOHa+g43t01BcdZaji0BpWGSsEEm9V+a5PlHzSeQazqTwz4L22yLZXbdGxNuNf5uuvj28ZsZZTg82x5+LuZ7hwXqdEaQsukbb6Jaqf8AGP4z1MnGWd3a537uS9AvDRsWNR162ctyNza73ws6sVk5tNbX0yfS31LsBec13rC1aRtnpVe8yTyZEFMw+vKf3AdSorabtDt+kqd1LBuVd3e3MdPnhGDydJjkO7mfiq43u7XC93GW43SqfU1Mp9Z7ug6ADkAOgC8d53xGzY06ecvL+z33BozUtzVavlT3y7uzt+Q91zca276kqLlXVBnNRh8LvmiIjLWtHQDl45UJhSIHpVlBHGSjdg//ABu/gc+9MAqdWk5S1n05nTrNGMKappYauX14AAlgJIS2rCegN1bXHfoCw/KhdvN/NdwPxwfaUhbmx7lLJO7hvjzbB2nqfYPtClHHEhPDLvI8qy+wKh9D2cUkhHrVU0s59rt0fBoVanjAJVu9EUItuj7RQgYMNHGHD626CfiSt/o5TxtEp9S8yoab19Wx06S/NLyX9omUIQrkcvBCEIAFVvymz/Whjst8P7T1aRVZ8po/1pH/AIfB9r1qL6+7eKLRoj+Ifxfoc1CMLDSlBVE6eZAXuNleurjo+tk8wDUUb3B89KT/AGjepb2PA4jt4g9MeISonujlbI04c05CyUqsqM1KLwZgtNnp2mk6dRYpl2tOXu26hs8F1tNUyppZhlrm8werSOhHUFKvdqo7xQupayPLebHj5THdoPaqnaH1jddDXs1lsd52gqcPnpHu9SQfucOOD9oVoND6usur7SK+01AcW4E0D+EkLuxw/fyKt9gvKFpWq8pLo4HLr5uGrd75SPOpvY+rsf1meCvdjrrHUbs485ATiOdo9V3cew9yaxT46rsdRDDUQPgnjZLE8Yc1wyCF4DUuiZ4HOqrKTNHzdTud6zfzSefgePitniV/Ah4pgeq0TahsNJUvpau+WymqGY34pqpjHtzxGQTlM2yvjeY5GuY9pw5rhgg94VePKjtwg1bbrs1jd2upDG845vjdj9lw9yALC1e0PQ9DvCp1dZmFvMCqa8+wNzlQFft12cUY9S71VYeymo3n4uwFTl0mOA4LU6U9qMQLTXbyltPw7wtenbnVH5rqiVkLT7BvFeF1B5R2ta1ro7VS2u0NPJ7IjNIPa84/yriBl70nziMQPXT6/wBZz32mvlRqm6TV9LJ5yGWSckMPcz5ODyIxghWY2R7ebLqnzFq1I6Gz3l2GteXbtNUu+q4/Icfonh2HoqcecWDJwweISxA+lTn4KQ+XvVKNme3TVejmw2+tf927PHhop6h/42JvZHJzH5rsjwVktBbWNGa1YyK13VkFeR61BV4inB7geD/0SUwOgPm703km701mnLefBNJKnjzTEPZJ+9M5qjvTOetY3I3t4joOJUbU1UsmcHzY7uJQA9q69jDu5y76I5qKqa3eJL3YHYtttt9bc6r0W3Uz5pTzxyb3uPT2rpWkNCUVpkZXXEtrK8cW5H4uI/VB5nvPswkMiND6Nlqdy5XmN0cJ9aKmcMOf3v7B3cz1XSGgNaGtAAAwAOiyhIYIQonU+o7NpugNbea+Klj47jScvkPY1vNx8FGc4wi5SeCJ06c6slCCxb6ESp4c1ybahtXgtzZbTpeWOoreLZawYdHD3N6Od8B38l4TaJtQumqDJQ2/zlttJ4GNrsSzj65HIfVHDtJXggByA4KrXjfutjTs/wA+HE6FcmiGphWtyz6I8eHz6hVRNNUzyVFTNJNNI4vkkkcXOc48ySeZWvw4krJCntP0MUFK6914xDEcQt6vd3f9/Yq5Tg6ksC61aqowx8EvQ2NDLFaQXsa6uqRxa7iGt7D/AN80y9Nt1R/pdtbG76dO/d+B4JlXVUtZVPqJjlzjy6AdAFoCyTrdEVkYqdmWGtN859pKGits3GluXmz9CoYW/EZCQ61VrWl0cbZ2fSheHj4JiClNc5rg5ji0jkQcFYnKD6DMoVFslj3/ANYG+CmllqBCQWHm4uGN0DmT4BIrqls0obGC2GMbsbe7tPeeadU9bUz71HPUPdHM3cBcc4PTj2Zwot2WuLXDDgcEHoU2klzQipOXO6CV0tbzdtTWy2tGRU1Ucbvzc+t8Mq3rQAAByCrh5Ptv9O2gMqXNyyhpnzHI4Bx9Rv7R9ysgrdo9R1aEqnW/L6ZzfTW08pa4UV+Vb3/SQIQhWApgIQhAAqseU0P60nH/ANvg+16tOqt+U2P6z8/+3w/a9ai+vu3ii0aI/iH8X6HMQlBJCUFUjp4oFKja6SQMaMuJwEhP6ICmp3Vbx6x9WMISxZGctVdo6qZqanZHSmBs24PWJOMFbbBdjZbtFdLNW1dsrGfObh7HD6Lh1b3FQxcXOLnHJJySgI5RqWKIOhFw1ZZ47e3w2FpNnO1Oz6gjiobpVU1FdDhoG9uxzHtbnkfqn2ZXRlRgd69/oXavqXTHm6aaT7q25uB6PUOO8wfUfzHgcjwW/sd+YYRrrx4lLvTRDWbqWN/xfo/R/Mspe7Dbbuz+lwDzgHqzM9V7fb19q4J5SOx3UuoNM0Z01FFdKihqTKIy8RyujcwhwGeBOd08xyXXtFbR9M6opQ+Cq9CqA4NfT1RDHBx5AHOHZ6YK9hzVhpVoVY60Hiij2izVbPNwqxcX2nyy1BabtYbg+33y2Vlsq2HBhqoXRu9mefiFFPcc8V9Ur9Y7NfqJ1Fe7VQ3KmPOKqgbK33OBwuL6y8lbZrenvntBuWnpnchRzb8Of/jkzjwBCyGDAoiXpBkwrKao8kDWFKZH6d1NaLpGPksqo300h92+34hc8vPk5bZrdk/egaxgGd6krYZPhvA/BAHLDJ3oMnevU1GynalBnzuzzVAx1FukcPgCmjtnW0VoJOgtUANGT/5TPw/yoA86+TvWnL5JmMia50jnARtYCXF3TGOOfBdg0F5Oe03VAiqayzT2K3v4mWtjxMR9WLg7/FuqxuzfYJSaNDJrZZhLccYdca6Vrpu/dA4MHc0e0oA5xsHtG1O3U8M+qL/NDaN3MVsrG+fqCMcPWdxiHdknuC64+UuHEr1tLs+r5HA1dwp4R1EbS8/HAU/bdDWSlIdOyWteP9s71f8ACMD3p4hgc0oqOsuEvmaCllqH9kbcgeJ5D2r11i2fSvLZr1UbjefmITknxd/D3roMEMNPEIoImRRjk1jQAPYFsRiPAbW6ho7fTCnoqeOCIfNYMZ7z2lOUJvX1lJQUzqmuqoaaBnF0krw1o9pUW0lixpOTwQ4SJZI4YnSyvbHGwZc5xwAO0lcq1jtsslva+n09A661I4CV2WQNPj8p3sGO9ckvur9SazqTFeLk5tC38ZJDENyFjR9Ucz0GSVqbRfNCm9WHOfZs+ZZbDotbLRHlKq5OPbt8FxwOz6+2r2u1WuQWJ7K6skJZBJziyObvrAd3AnquG3XUNbfK81t+bFcJyN3zj27rg3sGOAHdhRtwqTV1G/u7sbQGRM6MaOQWpqrNuvGraZZvJdHQXy6rks9gp81c57W9vdjwJRoss3D+k0h9j2/xW1lnE/Gir6Wc/RLtx3uKiQsjtWv14vbH0Nvyc/yzfjn/AHvJu3adrZa9kdZE6Gnb60jyRjA6ArXqW6NrqhsFMAyjp/Via3gD0ysWWulM5oqiok9GqWmI7zj6pPI+w4UVLG+GZ8Mg3XscWuHYQpSklTwh07TFCnKVbGo8Wllx7zCzhAWVhPWASgsBZQCMO5LXO90kz5HnLnHJPaVtKQ2KSaZkMLS+SRwYxo5lxOAPehdQ3htZ3nybbOaXTVbeJB69dPuR8P8AVx8P2i73Lq6i9KWqOx6ct9piAxTQNYSOrsesfaclSi6PYqHIUIU+pb+k4fetr9stlSt0N5d2xbgQhC9RrwQhCABVc8pv+83/AJfD+09WjVXPKeONprf+HQ/tPWpvr7t4os+iP4h/F+hzDiOYKU1YZNIOoPiFuZOCPWiaVUsjp+LXQKpYvPTBp+SOLkuunE0wa3hGzg0LLJWmnlELNx2MnwTYBDyWBCK1pYvoFhLCQltKxsyigEEIBWVHAaY6s7m+lupJHARVbfNHPIOPyT7HYXodKbRNYaYkENNdJZ6dh3TS1mZWDHQZ9ZvsIXkyPZ3p7d8T+Zr2/wDqG/jO6VvB3v4H2rNTqzgtaDwaPPXoUqz1KsVKL61jn/zyO6ab282mcMiv9qqaGTgDLTnzsfjjg4fFdIsWsNMXwNFrvlDUPPKPzobJ/hOHfBU0ws8yM8cLaUb8tEMppS3P68Cu2vQ+xVc6TcH81vz3l5kKmlo1Zqa0gNt1/uVOwcmCoc5n+E5HwXp6DbHrylwJLjS1YHSelbk+1uFsYX/QfxRa3miraFWuP+ucX816PzLSoVc6Xb5qSMgVVmtUw6lhkYftK9DTbc5BbBWVem2gvfuxNZV/KA5ni3kF6oXzZJfmw8Ga+poteVP8ifc1xO1oXEzt7ixw0vJnvrR/Ikfh63uH3t7nearex7N0J++LH+vc+BBaMXp+1vjxO3oXAK/bNqKqyLabNS55CaF5cPaXYXm67Wm027Ttg+7kkMchxv0gjjY0du83j8VinfVBfAm+7/p6aWidslnUlGPe3wLPVVRBSwumqZo4Im8XPkcGtHiSvF3/AGraKtG8wXT7oTD/AFdE3zv+b5PxVdNT3mouD46P02oqaenGN+aRz3Sv6vJJ4qGC11ov+eOFKK73mbuxaF0tVTtE2+xZcTr9+253aoc6Oy2mCjjPASTv85J4gD1QfevA3e5yahqfSLterhLMeXpP4xjfANxgeAUCFtbyWlr26vX/ANksVu3Fpst0WSyf6Iar69r+bxHElnqHDeppYKkf7uQZ9xwVmvaKKFtujIL+D6lw6u6N8B9qbkArfXAzU8NZzd/Yy/nAcD7W/YVgjJYPBZnscZa0dZ4r16PrrGrUsJASwViMrMhKCSEoJDTMk+xSN4b6Q2nuTf8A1DN2XHSVvB3vGD7VHJ/bH+fpam3H5Th56H89o4j2tz7gpwWOMesxVua1Pq8vrPwGACyhCxmYEoJKUECAr3Ww2wfdnXEVVKwupra30h/YX5wwe/j+ivCqymxTTxsWjIZZ2btXcCKmUEcWgj1G+xvHxJW0uey+0WlY7I5v0NBpNeHsdgkk+dPJeO3d6HuUIQr6cgBCEIAEIQgAVWfKeP8AWgB/7dD+09WmVWPKe/vR/wCXQ/tPWovr7t4otGiP4h/F+hzFqWEhqWFUjqBtp5PNStfjI5Edo6pczPNyuYDkc2ntHRaQt5/GUzXfOi9U+B5JEdksRIWUkckpImKBSgVrCUCoiF5T2gHpFLPRcy4edi/Pb/EZTDewp+xQR0dE+7VI5cIh2+Hip01jIxV5qMO3o7yAQph11im4VdupZc9WjdPvWvdsc551dI72SN/ilqp7GSVWS+KL8yMCDxUn9yWS8aO40k/1XO8273OWt9nurZWR+gTEvIDSG5HvCTpy6iSr0+v0NNsoDWTnfd5uniG/NJ9Fv8exba6q9Jn3mt83EwBkTPoNHIfx705u08VLA20Ubg5rDvVMo/1knZ4BRzUp4RWqvEVNub5R+HHxFhZAQEoLEZsTGMpxbpnUlZFUMzhrvWb0cOo9y1BZCFk8UDSkmmLudMKWvkjYd6I4fE7tYeIWgKSe30uzB+czUTt098Tjw9zvtUdjCnNZ4rYyFKTccHtWRloW1q1BbGlY2ZBWE7toEzpaJxwKhu63PSQcWn38PammUBxa4OacEHII6FEXg8SM1rRwNYBHAjB6rITu6tDpmVbBhlS3znDo/k4e/j7QmaGsHgEJa6xNgWQkhKCiSwMlZilfBOyeM4fG4Oae8JKf2WhbVSunqCG0sPrSOPI9ylTTlJJEas4wg3LYYusIjqzJEwiGYCVnDgA4Zx7CmgCkKu81T6pz4JTHDyZHgEYHaFrNwZJ/pFFTvP0mAsPw4fBTmoOTwZipOrGKUlvzGaN5KqZIHOBgjewY4hzs/uWpjJJZWRRMdJI9waxjRkuJOAAO1Y8M8DOnliz12ynTZ1PrCnppGF1FT4qKo9NwHg39I8PDKtGAAAAMAcl5HZRpJmk9Msgma03CpxLVvH0scGDuaOHjk9V69Xu6bF7LQ53xPN8DkWkd6e8LW9R8yOS9X4+WAIQhbQr4IQhAAhCEACqx5T396P8Ay6H9p6tOqr+U9/ej/wAvh+161N9fdvFFo0Q/EP4v0OYgpYK1gpQKqTR082ArdSvDZg13yHjdd4FN0uJhkkawdeZ7EkKWw2uaWSOjdzacLKcSVFP50tfFv44F3VKaba/mZIyjV7SCqPDFpjQlGU9FHTS/2VYzPYUl1squcZjkHccIdOQKvT6WLstCa+tbGciJvGQ93Z4p5f69tTUNp4MCmg9VgHInt/cs1EwtdsbRwu/pEwy9w5gdf4BQ7SpS5kdVbekx0lys+UexbOJtQsArIWA9ZnGU8tlfUUFTHNFLJutcC5m8d1w6ghNAlgJJtPFClFSWDNt2pm09xkER3oZMSRO7WO4j+HsWlo4J6f6TaO2Wjd74nH9zvtTNqlNZ4rpI0m9XB7VkKCyFjCysZkFBZykgrOUgHloqGQXBnnv7CUGKUfVdwz7OfsWmspn0tVLTyfKjcWnv703JUzUwzV9upa6KJ8km75qbdGclvAO932LJFOUcF0GKclTmpPY8uH13EQshKkY5jsPaWnsIwkLEzOniLBRlJSomPllbFG0ue84aB1KSTewHksWSNvp5q63VELGtAheJGvc7ABPAjPfw9y0VNurqYb01NIGfTA3m+8cE+vT46SjitEBBDDv1Dh86Ts8Aoymqammdmnnki/NcQFnmorCL2o8tHlJJzjsexfXX3GtqzlPRcnSH+l0tNUdrizdd724Smi0T8M1VI72SN/iseonsZm5SUfij8s/73GihppaypZTwjLnHiegHaU8vNXEyNlsoj/R4T67v9o/qVuqHw2u1iOjl87LVAl0wGMNHDAUIApP/ABx1Vte0xw/zS13sWziZSklZBWE9QrdyuybA9Dl0rdWXWH1W5FBG4czyMv7h7T2Ly2yHRMuqrr6VVxubaKVw887l513PzY/eeg8VZOKNkUTYomNZGwBrWtGAAOQAVjuS7XNqvUWS2dvaUfSu/FSi7HRfOfxPqXV3vp7O8WhCFbTnAIQhAAhCEACEIQAKq/lP/wB6P/L4fterUKrPlPj+s4f8Ph/aetTfP3bxRaNEfxD+L9DloSwtYS2lVI6eLCct/EQ73+sfy7gtdK0PeXO+Q3iUmaUyyF3TkB3IWWZjfOeqYHBZA4rAS2hRMmIELLXSM/s5Hs8HYSgjCQsMR5XZqaaCtzl2PNS/nDkfaE1anVsIe+SjefVqG7rT2PHyT+72prgtcQ4YIOCE5PHMjT5vNNjUoJDUoFQZlFhKCQCs5UcBju2TsgrmOl/sXgxyjtY7gf4+xYqqd1NUywP4ujcW57e9NcqUqGuq7ZT1jGue9n4mbAyeHyT7uHsU0taOHUYpy1JqXQ8hiELGe9YzlY2ZUZyguWEBrnuDWAuc44AHMlRJbBzbKOW4VrKePrxc76I6lP73dXQTMorZM6KCn9XeYflFOKtwsVpFHE4en1LczPHzG9n/AH3lecDV6W+Sjqra9vA8UF7RPXfwrZ29vAlYr9WkBtQynqm9RLED8QtorLNOP6RbZadx5up5eHucocNSgFjdWT2595m9npr4cu7IlTR26Y/0S5NafoVDCw+8cE6pIfuPTPuEr4pJnZjpwxwcAccXZCggn9pb6Sye3dZG+chH+8aM49oyPcinJa2SzI1oS1M5Yrp7hqXOe4ucSSTkk9VjCByWVhZ6kASgFgJSQDphE1uliPyoD51n5pwHD7D70zS45HRv3mnjgg94IwR8VrCbeJGMcGxWF6jZ1oyv1heRTxB8NDCQaqpxwYPojtceg9pStnOi7lrC57kIdBb4nD0mqI4N+q3td3dOZ77M6es1vsNqhtlsp2w08Q4Ac3Hq5x6k9q3N13U7TLlKiwh5la0h0ijYIujReNR/+e19vUvF9uyy2yis9sgttugbBTQN3WMb8Se0nmT1TxCFdIxUVgthyuUpTk5SeLYIQhMiCEIQAIQhAAhCEACqv5Tzv60COy3w/a9WoVVfKd/vTf8A/sIPtetTfX3fxRaNEfxD+L9DmbZCBjAIHaEtsjPnRD2LQEoKp4nTXFDp7wafEQ3W59YLU0LMPyJPzVgJMUVhiLalhICW1JkhQWQkrIURigSHBwOCOIKeXMCSRlWwYbUN3ndzxwcPfx9qZhPBxs5z0qBju9VOOaaMc8pJjULIKwsBRZlF5WQ5IQojHFLDJU1DIIhl7zgfxUzc682tkVut0gBj4zPxned2JOjQPSal2BkRjB6jioN5Je4kkkuOSVlXMp6y2s8rSq1tWWxEoLwZeFXQ0lR37u673hKElkm+VFWUjj1a4SN+OCokclkc1DlG9uZmVCK+HLu+sCYbbKeb/Q7nTSfVkzG74p5bqVtnbJca8ML2erAwOB3ndq88OSkBx047PHdqxju9VSpyjjilmjFWhPVUXLFP5jWpnlqqh88zt57zklICwEoLE3jmemKSWCMpQSQlBQJGcLMMskE8c8R3ZI3B7T3hBSTyRsHhisGP7wyNtb56AAQVLRPGByAdzHsOQmidT8bHQk8xNMB4erwTUKVT4iFH4MOrL5ACs5WDzWAsZlFL3GzHZ3cNW1LaupElHZmO9efGHTY5tj/e7kO8ryNmYyS80McjGvY+pja5rhkOBcMgjqFcanijhhZFDGyONjQ1rGDAaByAA5Bbm57BTtdRupsj0dZWdJ74rXdRjGiudPHPq/s0We20Not0NuttNHTUsLd1kbBwHf3ntJ5p2hCuqSisEcplJyblJ4tghCEyIIQhAAhCEACEIQB//9k=">
+    </div>
+    <div class="activation-title">MY ACADEMY</div>
+    <div class="activation-sub">Stargate Football Management</div>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;">Εισάγετε τον κωδικό ενεργοποίησης<br>που σας έχει αποδοθεί από τη Stargate.</p>
+    <!-- USER LICENSE -->
+    <div id="user-section">
+      <input type="text" class="activation-field" id="activation-input" placeholder="XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false">
+      <div class="activation-error" id="activation-error"></div>
+      <button class="activation-btn" id="activation-submit">Ενεργοποίηση</button>
+      <div style="margin-top:.75rem;">
+        <button id="show-admin-btn" style="background:none;border:1px solid var(--border2);color:var(--muted);width:100%;padding:.55rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.75rem;cursor:pointer;">⚙️ Είσοδος ως Admin</button>
+      </div>
+    </div>
+    <!-- ADMIN SECTION (inline, no popup) -->
+    <div id="admin-section" style="display:none;margin-top:.5rem;">
+      <input type="password" class="activation-field" id="admin-input" placeholder="Κωδικός Admin" autocomplete="off" spellcheck="false">
+      <div class="activation-error" id="admin-error"></div>
+      <button class="activation-btn" id="admin-submit" style="margin-bottom:.5rem;">🔐 Σύνδεση Admin</button>
+      <button id="hide-admin-btn" style="background:none;border:1px solid var(--border2);color:var(--muted);width:100%;padding:.45rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.72rem;cursor:pointer;">← Πίσω</button>
+    </div>
+    <div class="activation-footer">
+      Για αγορά κωδικού επικοινωνήστε με τη<br>
+      <strong style="color:var(--accent)">Stargate Football Management</strong>
+    </div>
+  </div>
+</div>
+
+<!-- MANUAL MODAL -->
+<div class="manual-overlay hidden" id="manual-overlay">
+  <div class="manual-box">
+    <div class="manual-header">
+      <h2>📖 Εγχειρίδιο Χρήστη — MY ACADEMY</h2>
+      <button class="modal-close" id="manual-close">✕</button>
+    </div>
+    <div class="manual-body">
+
+      <div class="manual-section">
+        <h3>1. Εισαγωγή</h3>
+        <p>Το <strong style="color:var(--accent)">MY ACADEMY</strong> είναι μια ολοκληρωμένη εφαρμογή διαχείρισης ποδοσφαιρικής ακαδημίας, ανεπτυγμένη από τη <strong style="color:var(--accent)">Stargate Football Management</strong>. Επιτρέπει την καταγραφή, παρακολούθηση και αξιολόγηση κάθε παίκτη της ακαδημίας σας με επαγγελματικό τρόπο.</p>
+        <div class="manual-tip">💡 Η εφαρμογή αποθηκεύει τα δεδομένα τοπικά στον browser σας. Για να μεταφέρετε δεδομένα σε άλλη συσκευή, χρησιμοποιήστε τη λειτουργία εξαγωγής (υπό ανάπτυξη).</div>
+      </div>
+
+      <div class="manual-section">
+        <h3>2. Ενεργοποίηση της Εφαρμογής</h3>
+        <p>Η εφαρμογή προστατεύεται με σύστημα ενεργοποίησης. Για να αποκτήσετε πρόσβαση:</p>
+        <div class="manual-step"><div class="manual-step-num">1</div><div>Επικοινωνήστε με τη <strong>Stargate Football Management</strong> για αγορά άδειας χρήσης.</div></div>
+        <div class="manual-step"><div class="manual-step-num">2</div><div>Λάβετε τον μοναδικό κωδικό ενεργοποίησης 14 ψηφίων (μορφή XXXX-XXXX-XXXX).</div></div>
+        <div class="manual-step"><div class="manual-step-num">3</div><div>Εισάγετε τον κωδικό στο πεδίο ενεργοποίησης και πατήστε "Ενεργοποίηση".</div></div>
+        <div class="manual-tip">⚠️ Κάθε κωδικός ενεργοποίησης είναι προσωπικός. Η διανομή του αρχείου χωρίς κωδικό δεν επιτρέπει πρόσβαση.</div>
+      </div>
+
+      <div class="manual-section">
+        <h3>3. Προσθήκη Νέου Παίκτη</h3>
+        <div class="manual-step"><div class="manual-step-num">1</div><div>Πατήστε το κουμπί <strong style="color:var(--accent)">+ Νέος Παίκτης</strong> στο κάτω μέρος της αριστερής στήλης.</div></div>
+        <div class="manual-step"><div class="manual-step-num">2</div><div>Συμπληρώστε τα υποχρεωτικά πεδία: <strong>Όνομα</strong> και <strong>Επώνυμο</strong>.</div></div>
+        <div class="manual-step"><div class="manual-step-num">3</div><div>Προαιρετικά: ημερομηνία γέννησης, κατηγορία, θέση, σχολείο, προηγούμενη ομάδα, στοιχεία γονέα.</div></div>
+        <div class="manual-step"><div class="manual-step-num">4</div><div>Καταχωρήστε την <strong>ημερομηνία εγγραφής</strong> στην ακαδημία και τον <strong>αριθμό μητρώου</strong>.</div></div>
+        <div class="manual-step"><div class="manual-step-num">5</div><div>Πατήστε <strong>Αποθήκευση</strong>. Ο παίκτης εμφανίζεται αυτόματα στη λίστα.</div></div>
+      </div>
+
+      <div class="manual-section">
+        <h3>4. Καρτέλες Παίκτη</h3>
+        <p>Κάθε παίκτης έχει 5 καρτέλες:</p>
+        <ul>
+          <li><strong style="color:var(--accent)">Προφίλ</strong> — Προσωπικά στοιχεία, σχολείο, προηγούμενη ομάδα, ημερομηνία εγγραφής και ημέρες παραμονής στην ακαδημία.</li>
+          <li><strong style="color:var(--accent)">Αξιολόγηση</strong> — Καταχώρηση βαθμολογιών (1-10) για Τεχνικό, Φυσικό, Τακτικό και Ψυχολογικό τομέα. Εμφανίζει radar chart και συνολική βαθμολογία.</li>
+          <li><strong style="color:var(--accent)">Ιστορικό</strong> — Χρονολογική λίστα όλων των αξιολογήσεων με γράφημα εξέλιξης.</li>
+          <li><strong style="color:var(--accent)">🏥 Υγεία</strong> — Υγειονομικός φάκελος: ομάδα αίματος, αλλεργίες, φαρμακευτική αγωγή, παθήσεις και ιστορικό τραυματισμών.</li>
+          <li><strong style="color:var(--accent)">📋 Κανονισμοί</strong> — Άμεσοι σύνδεσμοι σε κανονισμούς FIFA, UEFA και ΕΠΟ.</li>
+        </ul>
+      </div>
+
+      <div class="manual-section">
+        <h3>5. Αξιολόγηση Παίκτη</h3>
+        <div class="manual-step"><div class="manual-step-num">1</div><div>Επιλέξτε παίκτη και πατήστε την καρτέλα <strong>Αξιολόγηση</strong>.</div></div>
+        <div class="manual-step"><div class="manual-step-num">2</div><div>Χρησιμοποιήστε τα sliders για να ορίσετε βαθμολογία (1-10) σε κάθε έναν από τους 4 τομείς.</div></div>
+        <div class="manual-step"><div class="manual-step-num">3</div><div>Προαιρετικά προσθέστε σχόλια στο πεδίο κειμένου.</div></div>
+        <div class="manual-step"><div class="manual-step-num">4</div><div>Πατήστε <strong>Αποθήκευση Νέας Αξιολόγησης</strong>. Η αξιολόγηση αποθηκεύεται με ημερομηνία και ώρα.</div></div>
+        <div class="manual-tip">💡 Το radar chart ενημερώνεται σε πραγματικό χρόνο καθώς μετακινείτε τα sliders.</div>
+      </div>
+
+      <div class="manual-section">
+        <h3>6. Υγειονομικός Φάκελος</h3>
+        <div class="manual-step"><div class="manual-step-num">1</div><div>Επιλέξτε καρτέλα <strong>🏥 Υγεία</strong>.</div></div>
+        <div class="manual-step"><div class="manual-step-num">2</div><div>Συμπληρώστε τα βασικά υγειονομικά στοιχεία και πατήστε <strong>Αποθήκευση Υγειονομικών</strong>.</div></div>
+        <div class="manual-step"><div class="manual-step-num">3</div><div>Για καταχώρηση τραυματισμού πατήστε <strong>+ Νέος Τραυματισμός</strong>, συμπληρώστε τα στοιχεία και αποθηκεύστε.</div></div>
+        <div class="manual-tip">⚠️ Τα ιατρικά δεδομένα αποθηκεύονται τοπικά. Για GDPR συμμόρφωση βεβαιωθείτε ότι έχετε λάβει γραπτή συγκατάθεση από τους γονείς.</div>
+      </div>
+
+      <div class="manual-section">
+        <h3>7. Φίλτρα & Αναζήτηση</h3>
+        <ul>
+          <li>Χρησιμοποιήστε το πεδίο <strong>αναζήτησης</strong> για εύρεση παίκτη με όνομα ή επώνυμο.</li>
+          <li>Τα κουμπιά κατηγορίας (<strong>U12, U14, U16, U19</strong>) φιλτράρουν τη λίστα ανά ηλικιακή ομάδα.</li>
+          <li>Η στατιστική μπάρα στην κορυφή εμφανίζει συνολικούς παίκτες, μέσο όρο βαθμολογίας και αριθμό αξιολογήσεων.</li>
+        </ul>
+      </div>
+
+      <div class="manual-section">
+        <h3>8. Σύστημα Βαθμολόγησης</h3>
+        <p>Η συνολική βαθμολογία είναι ο μέσος όρος των 4 τομέων:</p>
+        <ul>
+          <li><strong>8.5 – 10.0</strong> → Εξαιρετικός</li>
+          <li><strong>7.0 – 8.4</strong> → Πολύ Καλός</li>
+          <li><strong>5.5 – 6.9</strong> → Καλός</li>
+          <li><strong>4.0 – 5.4</strong> → Μέτριος</li>
+          <li><strong>1.0 – 3.9</strong> → Χρειάζεται Δουλειά</li>
+        </ul>
+      </div>
+
+      <div class="manual-section">
+        <h3>9. Τεχνικές Πληροφορίες</h3>
+        <ul>
+          <li>Τα δεδομένα αποθηκεύονται στο <strong>localStorage</strong> του browser.</li>
+          <li>Συνιστάται χρήση σε <strong>Chrome, Firefox ή Edge</strong> (τελευταίες εκδόσεις).</li>
+          <li>Για <strong>backup</strong> των δεδομένων, αντιγράψτε το περιεχόμενο του localStorage (F12 → Application → localStorage).</li>
+        </ul>
+        <div class="manual-tip">Έκδοση 1.0 | © 2025 Stargate Football Management | Όλα τα δικαιώματα διατηρούνται.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
